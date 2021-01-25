@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/01/25 12:58:50 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/01/25 17:41:29 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,12 @@ static t_block  *ft_findblock(t_block *blk, size_t size, size_t szone)
     return (new);
 }
 
-static t_block  *ft_getblock(t_block **lst, size_t size, size_t szone)
+static t_block  *ft_getblock(t_block *lst, size_t size, size_t szone)
 {
-    t_block *cur;
     t_block *new;
     
-    cur = *lst;
-    if (cur)
-        new = ft_findblock(cur, size, szone);
+    if (lst)
+        new = ft_findblock(lst, size, szone);
     else
     {
         new = ft_new_block(szone);
@@ -59,16 +57,15 @@ static t_block  *ft_getblock(t_block **lst, size_t size, size_t szone)
         new->stotal = szone - size;
     }
     ft_putnbr(new->csize);
-    *lst = new;
-    ft_putnbr((*lst)->csize);
+    lst = new;
+    ft_putnbr(lst->csize);
     return (new);
 }
 
-t_block             *ft_alloc(size_t size)
+void             *ft_alloc(size_t size)
 {
     t_block         *block;
     struct rlimit   *rlp;
-    void *p;
 
     getrlimit(RLIMIT_DATA, rlp);
     if (size > rlp->rlim_max || size > rlp->rlim_cur)
@@ -77,9 +74,9 @@ t_block             *ft_alloc(size_t size)
     size = ft_getalign(size + STRUCT, 16);
     ft_putnbr(size);
     if (size < TINY)
-        block = ft_getblock(&g_lst.tiny, size, TINY_ZONE);
+        block = ft_getblock(g_lst.tiny, size, TINY_ZONE);
     else if (size < SMALL)
-        block = ft_getblock(&g_lst.small, size, SMALL_ZONE);
+        block = ft_getblock(g_lst.small, size, SMALL_ZONE);
     else
     {
         if (!block)
@@ -92,17 +89,13 @@ t_block             *ft_alloc(size_t size)
     write(1, "\n", 1);
     write(1, "0x", 2);
     ft_putstr(ft_lltoa_base((long long)block, 16));
-    p = block;
-    write(1, "\n", 1);
-    write(1, "0x", 2);
-    ft_putstr(ft_lltoa_base((long long)p+STRUCT, 16));
-    return (p);
+    return (block);
 }
 
 void            *ft_malloc(size_t size)
 {
     static int  init = 0;
-    t_block *p;
+    void        *p;
 
     ft_putnbr(init);
     if ((int)size <= 0)
