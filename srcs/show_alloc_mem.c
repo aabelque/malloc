@@ -6,36 +6,40 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 17:09:37 by aabelque          #+#    #+#             */
-/*   Updated: 2021/01/23 10:25:52 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/01/28 21:40:45 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* #include "malloc.h" */
 #include "../include/malloc.h"
 
-static void print_mem(t_block *lst)
+static void print_mem(t_page *page)
 {
-    ft_putstr(ft_lltoa_base((long long)lst, 16));
+    ft_putstr(ft_lltoa_base((long long)page, 16));
     write(1, "\n", 1);
-    while (lst && lst->nxt)
+    while (page)
     {
-        write(1, "0x", 2);
-        ft_putstr(ft_lltoa_base((long long)lst, 16));
-        ft_putstr(" - ");
-        write(1, "0x", 2);
-        ft_putstr(ft_lltoa_base((long long)lst->nxt, 16));
-        ft_putstr(" : ");
-        ft_putnbr((lst->nxt) - (lst));
-        ft_putstr(" octets\n");
-        lst = lst->nxt;
+        while (page->blk && page->blk->nxt)
+        {
+            write(1, "0x", 2);
+            ft_putstr(ft_lltoa_base((long long)page->blk->p, 16));
+            ft_putstr(" - ");
+            write(1, "0x", 2);
+            ft_putstr(ft_lltoa_base((long long)page->blk->nxt, 16));
+            ft_putstr(" : ");
+            ft_putnbr(page->blk->len);
+            ft_putstr(" octets\n");
+            page->blk = page->blk->nxt;
+        }
+        page = page->nxt;
     }
 }
 
 void     show_alloc_mem(void)
 {
-    t_block *tiny;
-    t_block *small;
-    t_block *large;
+    t_page  *tiny;
+    t_page  *small;
+    t_page  *large;
 
     tiny = g_lst.tiny;
     small = g_lst.small;
