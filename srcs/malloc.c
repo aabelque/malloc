@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/01/29 17:43:11 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/01/30 15:00:56 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ static void     *ft_getblock(t_page **zone, size_t len, size_t len_zone)
 
 static void     *ft_alloc(size_t size)
 {
-    void            *new;
     struct rlimit   rlp;
 
     size = ft_getalign(size, 16);
