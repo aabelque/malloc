@@ -7,6 +7,8 @@ int main()
     void *new;
     char *s2;
     char *s3;
+    char *s4;
+    char *ss;
 
     /* write(1, "A", 1); */
     /* write(1, "A", 1); */
@@ -23,15 +25,27 @@ int main()
         return -1;
     if (!(s3 = (char *)ft_malloc(5000)))
         return -1;
-    printf("s: %p\n", s);
-    strcpy(s, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    printf("%s\n", s);
-    printf("s2: %p\n", s2);
-    strcpy(s2, "bonjour comment ca va?");
-    printf("%s\n", s2);
-    printf("s3: %p\n", s3);
-    strcpy(s3, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-    printf("%s\n", s3);
+    if (!(s4 = (char *)ft_malloc(20000)))
+        return -1;
+    /* printf("s: %p\n", s); */
+    /* strcpy(s, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); */
+    /* printf("%s\n", s); */
+    /* printf("s2: %p\n", s2); */
+    /* strcpy(s2, "bonjour comment ca va?"); */
+    /* printf("%s\n", s2); */
+    ft_free(s);
+    if (!(s = (char *)ft_malloc(33)))
+        return -1;
+    if (!(ss = (char *)ft_malloc(30)))
+        return -1;
+    /* ft_free(s3); */
+    /* ft_free(s4); */
+    /* printf("s3: %p\n", s3); */
+    /* strcpy(s3, "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"); */
+    /* printf("%s\n", s3); */
+    /* printf("s4: %p\n", s4); */
+    /* strcpy(s4, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"); */
+    /* printf("%s\n", s4); */
     show_alloc_mem();
     return (0);
 }

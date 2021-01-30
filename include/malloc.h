@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:20:29 by azziz             #+#    #+#             */
-/*   Updated: 2021/01/28 19:54:07 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/01/29 17:01:14 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,13 @@ typedef struct  s_malloc
 
 t_malloc g_lst;
 
+void        ft_free(void *ptr);
 void        *ft_malloc(size_t size);
 size_t      ft_getalign(size_t size, int align);
 t_block     *ft_new_block(size_t size);
 void        show_alloc_mem(void);
-/* void        *ft_alloc(size_t size); */
 void        *ft_create_zone(t_page *prev, size_t size, size_t len);
+void        *ft_alloc_large(t_page **page, size_t len);
 /* void    *realloc(void *ptr, size_t size); */
 /* void    free(void *ptr); */
 

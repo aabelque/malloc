@@ -6,7 +6,7 @@
 #    By: aabelque <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/22 12:03:18 by aabelque          #+#    #+#              #
-#    Updated: 2021/01/22 15:10:12 by aabelque         ###   ########.fr        #
+#    Updated: 2021/01/30 11:19:38 by aabelque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,7 +60,7 @@ $(NAME): $(OBJ_DIR) $(OBJ) $(INC)
 	@tput dl; tput el1; tput cub 100; echo "\033[33mBuilt library:\033[0m \033[32;1;4m$(notdir $@)\033[0m"
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INC)
-	@$(CC) -fPIC $(CFLAGS) -I$(INCDIR) -o $@ -c $<
+	@$(CC) -g -fPIC $(CFLAGS) -I$(INCDIR) -o $@ -c $<
 	@tput dl; tput el1; tput cub 100; echo "\033[33mCreating object files: \033[32;1;4m$(notdir $@)\033[0m\c"
 
 $(OBJ_DIR):

@@ -6,7 +6,7 @@
 #    By: azziz <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/11 10:06:32 by azziz             #+#    #+#              #
-#    Updated: 2021/01/22 19:58:39 by aabelque         ###   ########.fr        #
+#    Updated: 2021/01/30 11:21:41 by aabelque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ CC = gcc
 CFLAG = -Wall -Wextra -Werror 
 
 SRC = malloc.c
+SRC += free.c
 SRC += utils.c
 SRC += show_alloc_mem.c
 
@@ -36,15 +37,15 @@ all: $(NAME)
 	
 $(NAME): $(OBJS)
 	@make -C $(LIBFT)
+	@$(CC) -g -shared -o $(NNAME)_$(HOSTTYPE).so -L $(LIBFT) -lft
 	@ar rc malloc.a $(OBJS)
 	@ranlib malloc.a
-	@$(CC) -shared -o $(NNAME)_$(HOSTTYPE).so -L $(LIBFT) -lft
 	@ln -sf $(NNAME)_$(HOSTTYPE).so $(NAME)
 	@tput dl; tput el1; tput cub 100; echo "\033[33mBuilt library:\033[0m \033[32;1;4m$(notdir $@)\033[0m"
 
 $(OBJS): $(O_DIR)%.o: $(C_DIR)%.c
 	@mkdir $(O_DIR) 2> /dev/null || echo "" > /dev/null
-	@$(CC) $(CFLAGS) -o $@ -c $< -I$(H_DIR) -I$(LIBFT)
+	@$(CC) -g $(CFLAGS) -o $@ -c $< -I$(H_DIR) -I$(LIBFT)
 
 normelibft:
 	$(MAKE) -C $(LIBFT) norme
