@@ -1,5 +1,6 @@
 #include "include/malloc.h"
 #include <errno.h>
+#include <limits.h>
 
 int main()
 {
@@ -8,7 +9,7 @@ int main()
     char *s2;
     char *s3;
     char *s4;
-    char *ss;
+    char *s5;
 
     /* write(1, "A", 1); */
     /* write(1, "A", 1); */
@@ -23,21 +24,29 @@ int main()
         return -1;
     if (!(s2 = (char *)ft_malloc(64)))
         return -1;
-    if (!(s3 = (char *)ft_malloc(5000)))
+    if (!(s3 = (char *)ft_malloc(48)))
         return -1;
-    if (!(s4 = (char *)ft_malloc(20000)))
+    if (!(s4 = (char *)ft_malloc(8)))
         return -1;
-    /* printf("s: %p\n", s); */
+    ft_free(s2);
+    if (!(s5 = (char *)ft_malloc(128)))
+        return -1;
+    ft_free(s3);
+    if (!(s2 = (char *)ft_malloc(256)))
+        return -1;
+    ft_free(s4);
+    if (!(s4 = (char *)ft_malloc(400)))
+        return -1;
+    /* printf("s: %s\n", s); */
     /* strcpy(s, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); */
     /* printf("%s\n", s); */
     /* printf("s2: %p\n", s2); */
     /* strcpy(s2, "bonjour comment ca va?"); */
     /* printf("%s\n", s2); */
-    ft_free(s);
-    if (!(s = (char *)ft_malloc(33)))
-        return -1;
-    if (!(ss = (char *)ft_malloc(30)))
-        return -1;
+    /* if (!(s = (char *)ft_malloc(33))) */
+    /*     return -1; */
+    /* if (!(ss = (char *)ft_malloc(30))) */
+    /* /1*     return -1; *1/ */
     /* ft_free(s3); */
     /* ft_free(s4); */
     /* printf("s3: %p\n", s3); */

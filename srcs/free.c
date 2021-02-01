@@ -6,17 +6,19 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/01/30 12:02:38 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/01 20:44:06 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* #include "malloc.h" */
 #include "../include/malloc.h"
 
-static int  ft_free_large(t_page **page, void *ptr)
+static int      ft_free_large(t_page **page, void *ptr)
 {
     t_page  *zone;
 
+    if (!*page)
+        return (-1);
     zone = *page;
     while (zone && zone->nxt)
     {
@@ -31,14 +33,12 @@ static int  ft_free_large(t_page **page, void *ptr)
     return (-1);
 }
 
-static void defrag(t_page *page)
-{
-}
-
-static int  ft_find_free(t_page *page, void *ptr)
+static int      ft_find_free(t_page *page, void *ptr)
 {
     t_block  *blk;
 
+    if (!page)
+        return (-1);
     blk = page->blk;
     while (page)
     {
@@ -57,19 +57,58 @@ static int  ft_find_free(t_page *page, void *ptr)
     return (0);
 }
 
-void    ft_free(void *ptr)
+static void     ft_defrag(t_block **curr, t_block **prev, t_block **next)
+{
+    if ((*prev)->free)
+    {
+        (*prev)->nxt = (*curr)->nxt;
+        (*curr)->prv = (*prev)->prv;
+        *curr = *prev;
+        (*curr)->len = (long)(*curr)->nxt - (long)*curr;
+    }
+    else if ((*next)->free)
+    {
+        (*next)->prv = (*curr)->prv;
+        (*curr)->nxt = (*next)->nxt;
+        *next = *curr;
+        (*next)->len = (long)(*curr)->nxt - (long)*curr;
+    }
+}
+
+static void     ft_find_fragment(t_page *page)
+{
+    t_block     *curr;
+    t_block     *next;
+    t_block     *prev;
+
+    if (!page)
+        return ;
+    curr = page->blk;
+    next = curr->nxt;
+    prev = curr->prv;
+    while (curr && curr->nxt)
+    {
+        if (curr->free && (next->free || prev->free))
+                ft_defrag(&curr, &prev, &next);
+        prev = curr->prv;
+        curr = next;
+        next = next->nxt;
+    }
+}
+
+void            ft_free(void *ptr)
 {
     if (!ptr)
         return;
 
     if (ft_find_free(g_lst.tiny, ptr))
     {
-        defrag(g_lst.tiny);
+        ft_find_fragment(g_lst.tiny);
         return ;
     }
     else if (ft_find_free(g_lst.small, ptr))
     {
-        defrag(g_lst.small);
+        ft_find_fragment(g_lst.small);
         return ;
     }
     else

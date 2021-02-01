@@ -6,7 +6,7 @@
 #    By: aabelque <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/22 12:03:18 by aabelque          #+#    #+#              #
-#    Updated: 2021/01/30 11:19:38 by aabelque         ###   ########.fr        #
+#    Updated: 2021/02/01 14:24:17 by aabelque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,8 @@ SRC = ft_atoi.c ft_bzero.c ft_factorial.c ft_isalnum.c ft_isalpha.c \
 	  ft_rm_endlist.c ft_rm_frontlist.c ft_rmlist.c get_next_line.c \
 	  ft_itoa_base.c ft_atoi_base.c ft_printlist.c ft_len_number.c \
 	  ft_memcharcpy.c ft_lltoa.c ft_ulltoa.c ft_utoa.c ft_len_unumber.c \
-	  ft_utoa_base.c ft_itoa_base_uppercase.c ft_lltoa_base.c
+	  ft_utoa_base.c ft_itoa_base_uppercase.c ft_lltoa_base.c \
+	  ft_atoll_base.c ft_putlnbr.c
 
 INCDIR = include/
 INCFILE = libft.h

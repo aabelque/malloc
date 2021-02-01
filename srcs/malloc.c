@@ -6,14 +6,28 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/01/30 15:00:56 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/01 20:44:06 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* #include "malloc.h" */
 #include "../include/malloc.h"
 
-static t_block     *ft_findblock(t_page **page, size_t sz)
+static void         ft_newblock(t_block **new, t_block *blk, size_t sz)
+{
+    *new = blk;
+    (*new)->prv = (void *)blk->prv;
+    (*new)->len = sz;
+    (*new)->free = 0;
+    (*new)->p = (void *)(*new) + STRUCT(t_block);
+    (*new)->nxt = (void *)(*new) + STRUCT(t_block) + sz;
+    (*new)->nxt->free = 1;
+    (*new)->nxt->nxt = blk->nxt;
+    (*new)->nxt->prv = (void *)(*new);
+    (*new)->nxt->nxt->nxt = NULL;
+}
+
+static t_block      *ft_findblock(t_page **page, size_t sz)
 {
     t_block     *blk;
     t_block     *new;
@@ -21,28 +35,27 @@ static t_block     *ft_findblock(t_page **page, size_t sz)
     blk = (void *)(*page)->blk;
     while (blk && blk->nxt)
     {
-        if (blk->free && sz <= blk->len)
+        if (blk->free && (sz + STRUCT(t_block)) <= blk->len)
         {
+            ft_init_block(&blk, sz + STRUCT(t_block));
             blk->free = 0;
+            /* blk->len = sz; */
+            /* blk->nxt = ; */
             (*page)->rest -= blk->len - STRUCT(t_block);
+            if (!blk->nxt->len)
+                blk->nxt->free = 1;
             return (blk);
         }
         blk = blk->nxt;
     }
-    new = blk;
-    new->prv = (void *)blk->prv;
-    new->len = sz;
-    new->free = 0;
+    ft_newblock(&new, blk, sz);
     (*page)->rest -= sz - STRUCT(t_block);
-    new->nxt = (void *)new + STRUCT(t_block) + sz;
-    new->nxt->prv = (void *)new;
-    new->p = (void *)new + STRUCT(t_block);
     if (!(*page)->rest)
         (*page)->free = 0;
     return (new);
 }
 
-static void     *ft_getblock(t_page **zone, size_t len, size_t len_zone)
+static void         *ft_getblock(t_page **zone, size_t len, size_t len_zone)
 {
     t_page      *page;
     t_block     *new;
@@ -67,7 +80,7 @@ static void     *ft_getblock(t_page **zone, size_t len, size_t len_zone)
     return (page->blk->p);
 }
 
-static void     *ft_alloc(size_t size)
+static void         *ft_alloc(size_t size)
 {
     struct rlimit   rlp;
 
@@ -84,7 +97,7 @@ static void     *ft_alloc(size_t size)
     return (NULL);
 }
 
-void            *ft_malloc(size_t size)
+void                *ft_malloc(size_t size)
 {
     static int  init = 0;
     void        *p;

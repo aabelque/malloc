@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/15 12:54:05 by aabelque          #+#    #+#             */
-/*   Updated: 2021/01/22 15:11:39 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/01 14:24:44 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ typedef struct		s_list
 	int				fd;
 }					t_list;
 
+void                ft_putlnbr(long n);
+long long			ft_atoll_base(const char *str, int str_base);
 char				*ft_utoa_base(unsigned int n,
         unsigned int base);
 char				*ft_utoa(unsigned int n);
