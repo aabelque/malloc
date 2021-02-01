@@ -6,19 +6,26 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/01 20:44:06 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/01 21:47:11 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* #include "malloc.h" */
 #include "../include/malloc.h"
 
-void        ft_init_block(t_block **blk, size_t len)
+void        ft_init_block(t_block **nw, t_block **blk, size_t len)
 {
-    t_block *new;
-
-    if (len ) 
-        return ;
+    (*blk)->free = 0;
+    (*blk)->p = blk + STRUCT(t_block);
+    if (((*blk) + len + 64) <= (*blk)->nxt)
+    {
+        (*nw) = (*blk) + len;
+        (*nw)->free = 1;
+        (*nw)->nxt = (*blk)->nxt;
+        (*nw)->prv = (*blk);
+        (*blk)->nxt = (*nw);
+        (*nw)->len = (long)(*nw)->nxt - (long)(*nw);
+    }
 }
 
 void        *ft_alloc_large(t_page **page, size_t len)

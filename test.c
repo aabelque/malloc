@@ -37,6 +37,8 @@ int main()
     ft_free(s4);
     if (!(s4 = (char *)ft_malloc(400)))
         return -1;
+    if (!(s3 = (char *)ft_malloc(48)))
+        return -1;
     /* printf("s: %s\n", s); */
     /* strcpy(s, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); */
     /* printf("%s\n", s); */
