@@ -6,13 +6,14 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/01 20:44:06 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/01 22:38:23 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* #include "malloc.h" */
 #include "../include/malloc.h"
 
+//TODO refactor free karge function
 static int      ft_free_large(t_page **page, void *ptr)
 {
     t_page  *zone;

@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/01 22:01:08 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/02 08:41:17 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ static t_block      *ft_findblock(t_page **page, size_t sz)
         if (blk->free && (sz + STRUCT(t_block)) <= blk->len)
         {
             ft_init_block(&new, &blk, sz + STRUCT(t_block));
+            blk->len = sz;
             (*page)->rest -= blk->len - STRUCT(t_block);
             if (!blk->nxt->len)
                 blk->nxt->free = 1;
