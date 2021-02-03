@@ -6,14 +6,13 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/01 22:38:23 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/03 17:03:36 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/* #include "malloc.h" */
-#include "../include/malloc.h"
+#include "malloc.h"
+/* #include "../include/malloc.h" */
 
-//TODO refactor free karge function
 static int      ft_free_large(t_page **page, void *ptr)
 {
     t_page  *zone;
@@ -60,14 +59,14 @@ static int      ft_find_free(t_page *page, void *ptr)
 
 static void     ft_defrag(t_block **curr, t_block **prev, t_block **next)
 {
-    if ((*prev)->free)
+    if ((*prev)->free && (*prev != *curr))
     {
         (*prev)->nxt = (*curr)->nxt;
         (*curr)->prv = (*prev)->prv;
         *curr = *prev;
         (*curr)->len = (long)(*curr)->nxt - (long)*curr;
     }
-    else if ((*next)->free)
+    else if ((*next)->free && (*next != *curr))
     {
         (*next)->prv = (*curr)->prv;
         (*curr)->nxt = (*next)->nxt;
@@ -91,25 +90,26 @@ static void     ft_find_fragment(t_page *page)
     {
         if (curr->free && (next->free || prev->free))
                 ft_defrag(&curr, &prev, &next);
-        prev = curr->prv;
         curr = next;
+        prev = curr->prv;
         next = next->nxt;
     }
 }
 
-void            ft_free(void *ptr)
+void            free(void *ptr)
 {
     if (!ptr)
         return;
-
     if (ft_find_free(g_lst.tiny, ptr))
     {
         ft_find_fragment(g_lst.tiny);
+        ft_can_i_free(g_lst.tiny);
         return ;
     }
     else if (ft_find_free(g_lst.small, ptr))
     {
         ft_find_fragment(g_lst.small);
+        ft_can_i_free(g_lst.small);
         return ;
     }
     else

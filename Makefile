@@ -6,7 +6,7 @@
 #    By: azziz <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/11 10:06:32 by azziz             #+#    #+#              #
-#    Updated: 2021/01/30 11:21:41 by aabelque         ###   ########.fr        #
+#    Updated: 2021/02/03 18:07:26 by aabelque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,7 @@ SRC = malloc.c
 SRC += free.c
 SRC += utils.c
 SRC += show_alloc_mem.c
+SRC += realloc.c
 
 OBJS = $(addprefix $(O_DIR),$(SRC:.c=.o))
 
@@ -37,7 +38,7 @@ all: $(NAME)
 	
 $(NAME): $(OBJS)
 	@make -C $(LIBFT)
-	@$(CC) -g -shared -o $(NNAME)_$(HOSTTYPE).so -L $(LIBFT) -lft
+	@$(CC) -shared -o $(NNAME)_$(HOSTTYPE).so -L $(LIBFT) -lft
 	@ar rc malloc.a $(OBJS)
 	@ranlib malloc.a
 	@ln -sf $(NNAME)_$(HOSTTYPE).so $(NAME)
@@ -45,7 +46,7 @@ $(NAME): $(OBJS)
 
 $(OBJS): $(O_DIR)%.o: $(C_DIR)%.c
 	@mkdir $(O_DIR) 2> /dev/null || echo "" > /dev/null
-	@$(CC) -g $(CFLAGS) -o $@ -c $< -I$(H_DIR) -I$(LIBFT)
+	@$(CC) $(CFLAGS) -o $@ -c $< -I$(H_DIR) -I$(LIBFT)
 
 normelibft:
 	$(MAKE) -C $(LIBFT) norme

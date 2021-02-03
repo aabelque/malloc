@@ -6,12 +6,12 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 17:09:37 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/01 18:33:12 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/03 17:02:17 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/* #include "malloc.h" */
-#include "../include/malloc.h"
+#include "malloc.h"
+/* #include "../include/malloc.h" */
 
 static void     print_mem(t_page *page, int *i)
 {
@@ -33,17 +33,6 @@ static void     print_mem(t_page *page, int *i)
                 ft_putstr(" octets\n");
                 *i += page->blk->len;
             }
-            /* else */
-            /* { */
-            /*     write(1, "0x", 2); */
-            /*     ft_putstr(ft_lltoa_base((long long)page->blk, 16)); */
-            /*     ft_putstr(" - "); */
-            /*     write(1, "0x", 2); */
-            /*     ft_putstr(ft_lltoa_base((long long)page->blk->nxt, 16)); */
-            /*     ft_putstr(" : "); */
-            /*     ft_putnbr(page->blk->len); */
-            /*     ft_putstr(" octets\n"); */
-            /* } */
             page->blk = page->blk->nxt;
         }
         page = page->nxt;

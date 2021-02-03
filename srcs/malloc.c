@@ -6,12 +6,12 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/02 08:41:17 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/03 17:23:00 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/* #include "malloc.h" */
-#include "../include/malloc.h"
+#include "malloc.h"
+/* #include "../include/malloc.h" */
 
 static void         ft_newblock(t_block **new, t_block *blk, size_t sz)
 {
@@ -27,7 +27,7 @@ static void         ft_newblock(t_block **new, t_block *blk, size_t sz)
     (*new)->nxt->nxt->nxt = NULL;
 }
 
-static t_block      *ft_findblock(t_page **page, size_t sz)
+t_block      *ft_findblock(t_page **page, size_t sz)
 {
     t_block     *blk;
     t_block     *new;
@@ -64,15 +64,15 @@ static void         *ft_getblock(t_page **zone, size_t len, size_t len_zone)
         return ((void *)(*zone)->blk->p);
     }
     page = *zone;
-    if (page->free)
+    while (page)
     {
-        while (page)
+        if (page->free)
         {
             if ((len + STRUCT(t_block)) <= page->rest)
                 if ((new = ft_findblock(&page, len)))
                     return (new->p);
-            page = page->nxt;
         }
+        page = page->nxt;
     }
     page = ft_create_zone(*zone, len_zone, len);
     return (page->blk->p);
@@ -95,12 +95,13 @@ static void         *ft_alloc(size_t size)
     return (NULL);
 }
 
-void                *ft_malloc(size_t size)
+void                *malloc(size_t size)
 {
     static int  init = 0;
     void        *p;
 
     p = NULL;
+    write(1, "X\n", 2);
     if ((int)size <= 0)
         return (NULL);
     if (!init)

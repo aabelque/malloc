@@ -6,24 +6,38 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/01 21:47:11 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/03 17:02:17 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/* #include "malloc.h" */
-#include "../include/malloc.h"
+#include "malloc.h"
+/* #include "../include/malloc.h" */
+
+void        ft_can_i_free(t_page *zone)
+{
+    while (zone && zone->nxt)
+    {
+        if (zone->rest == zone->size)
+            if (!(munmap(zone, zone->size + STRUCT(t_page))))
+            {
+                zone = NULL;
+                return ;
+            }
+        zone = zone->nxt;
+    }
+}
 
 void        ft_init_block(t_block **nw, t_block **blk, size_t len)
 {
     (*blk)->free = 0;
-    (*blk)->p = blk + STRUCT(t_block);
-    if (((*blk) + len + 64) <= (*blk)->nxt)
+    (*blk)->p = (void *)(*blk) + STRUCT(t_block);
+    if (((void *)(*blk) + len + 64) <= (void *)(*blk)->nxt)
     {
-        (*nw) = (*blk) + len;
+        (*nw) = (void*)(*blk) + len;
         (*nw)->free = 1;
-        (*nw)->nxt = (*blk)->nxt;
-        (*nw)->prv = (*blk);
-        (*blk)->nxt = (*nw);
+        (*nw)->nxt = (void*)(*blk)->nxt;
+        (*nw)->prv = (void*)(*blk);
+        (*blk)->nxt = (void*)(*nw);
         (*nw)->len = (long)(*nw)->nxt - (long)(*nw);
     }
 }
@@ -62,6 +76,7 @@ void        *ft_create_zone(t_page *prev, size_t size, size_t len)
     new->nxt = (void *)new + size;
     new->nxt->nxt = NULL;
     new->rest = size - (STRUCT(t_page) + STRUCT(t_block));
+    new->size = size - STRUCT(t_page);
     new->free = 1;
     new->blk = (void *)new + STRUCT(t_page);  
     new->blk->len = len;
@@ -70,9 +85,7 @@ void        *ft_create_zone(t_page *prev, size_t size, size_t len)
     new->blk->nxt = (void *)new->blk + STRUCT(t_block) + len;
     new->blk->nxt->free = 1;
     new->blk->prv = (void *)new->blk;
-    /* new->blk->nxt->nxt = (void *)new + size; */
     new->blk->nxt->prv = (void *)new->blk;
-    /* new->blk->nxt->nxt->nxt = NULL; */
     if (prev)
         prev->nxt = (void *)new;
     return ((void *)new);

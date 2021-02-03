@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:20:29 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/01 21:47:11 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/03 17:03:36 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct  s_page
 {
     short           free;
     size_t          rest;
+    size_t          size;
     t_block         *blk;
     struct s_page   *nxt;
 }               t_page;
@@ -54,16 +55,16 @@ typedef struct  s_malloc
 
 t_malloc g_lst;
 
-void        ft_free(void *ptr);
-void        *ft_malloc(size_t size);
+void        free(void *ptr);
+void        *malloc(size_t size);
 size_t      ft_getalign(size_t size, int align);
 t_block     *ft_new_block(size_t size);
 void        show_alloc_mem(void);
 void        *ft_create_zone(t_page *prev, size_t size, size_t len);
 void        *ft_alloc_large(t_page **page, size_t len);
 void        ft_init_block(t_block **nw, t_block **blk, size_t len);
-/* void        ft_find_fragment(t_page *page); */
-/* void        ft_defrag(t_block **curr, t_block **prev, t_block **next); */
-/* void    *realloc(void *ptr, size_t size); */
+void        ft_can_i_free(t_page *zone);
+void        *realloc(void *ptr, size_t size);
+t_block     *ft_findblock(t_page **page, size_t sz);
 
 #endif

@@ -39,6 +39,11 @@ int main()
         return -1;
     if (!(s3 = (char *)ft_malloc(48)))
         return -1;
+    ft_free(s);
+    if (!(s = (char *)ft_malloc(5000)))
+        return -1;
+    if (!(s = (char *)ft_realloc(s, 7000)))
+        return -1;
     /* printf("s: %s\n", s); */
     /* strcpy(s, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); */
     /* printf("%s\n", s); */
