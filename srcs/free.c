@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/03 17:03:36 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/04 18:10:03 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ static void     ft_find_fragment(t_page *page)
 
 void            free(void *ptr)
 {
+    write(1, "X\n", 2);
     if (!ptr)
         return;
     if (ft_find_free(g_lst.tiny, ptr))

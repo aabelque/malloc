@@ -2,15 +2,34 @@
 #include <errno.h>
 #include <limits.h>
 
+void print(char *s)
+{
+    write(1, s, strlen(s));
+}
+
 int main()
 {
-    char *s;
-    void *new;
-    char *s2;
-    char *s3;
-    char *s4;
-    char *s5;
+    /* char *s; */
+    /* void *new; */
+    /* char *s2; */
+    /* char *s3; */
+    /* char *s4; */
+    /* char *s5; */
 
+	/* char *addr; */
+
+	char *str, *ptr;
+	if (!(str = ft_malloc(10)))
+		return 0;
+	printf("Malloc OK\n");
+	if (!(ptr = ft_realloc("wiwiwiwi", 12)))
+		return 0;
+	printf("Realloc OK\n");
+	/* addr = ft_malloc(16); */
+	/* ft_free(NULL); */
+	/* ft_free((void *)addr + 5); */
+	/* if (ft_realloc((void *)addr + 5, 10) == NULL) */
+	/* 	print("Bonjours\n"); */
     /* write(1, "A", 1); */
     /* write(1, "A", 1); */
     /* if (!(new = mmap(0, 409600, PROT, FLGS, -1, 0))) */
@@ -20,30 +39,30 @@ int main()
     /* if (!(s = (char *)malloc(409600))) */
     /*     return -1; */
     /* printf("addr malloc: %p\n", s); */
-    if (!(s = (char *)ft_malloc(20)))
-        return -1;
-    if (!(s2 = (char *)ft_malloc(64)))
-        return -1;
-    if (!(s3 = (char *)ft_malloc(48)))
-        return -1;
-    if (!(s4 = (char *)ft_malloc(8)))
-        return -1;
-    ft_free(s2);
-    if (!(s5 = (char *)ft_malloc(128)))
-        return -1;
-    ft_free(s3);
-    if (!(s2 = (char *)ft_malloc(256)))
-        return -1;
-    ft_free(s4);
-    if (!(s4 = (char *)ft_malloc(400)))
-        return -1;
-    if (!(s3 = (char *)ft_malloc(48)))
-        return -1;
-    ft_free(s);
-    if (!(s = (char *)ft_malloc(5000)))
-        return -1;
-    if (!(s = (char *)ft_realloc(s, 7000)))
-        return -1;
+    /* if (!(s = (char *)ft_malloc(20))) */
+    /*     return -1; */
+    /* if (!(s2 = (char *)ft_malloc(64))) */
+    /*     return -1; */
+    /* if (!(s3 = (char *)ft_malloc(48))) */
+    /*     return -1; */
+    /* if (!(s4 = (char *)ft_malloc(8))) */
+    /*     return -1; */
+    /* ft_free(s2); */
+    /* if (!(s5 = (char *)ft_malloc(128))) */
+    /*     return -1; */
+    /* ft_free(s3); */
+    /* if (!(s2 = (char *)ft_malloc(256))) */
+    /*     return -1; */
+    /* ft_free(s4); */
+    /* if (!(s4 = (char *)ft_malloc(400))) */
+    /*     return -1; */
+    /* if (!(s3 = (char *)ft_malloc(48))) */
+    /*     return -1; */
+    /* ft_free(s); */
+    /* if (!(s = (char *)ft_malloc(5000))) */
+    /*     return -1; */
+    /* if (!(s = (char *)ft_realloc(s, 7000))) */
+    /*     return -1; */
     /* printf("s: %s\n", s); */
     /* strcpy(s, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); */
     /* printf("%s\n", s); */
@@ -62,6 +81,6 @@ int main()
     /* printf("s4: %p\n", s4); */
     /* strcpy(s4, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"); */
     /* printf("%s\n", s4); */
-    show_alloc_mem();
+    /* show_alloc_mem(); */
     return (0);
 }

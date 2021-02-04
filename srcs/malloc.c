@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/03 17:23:00 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/04 18:17:57 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,13 +95,14 @@ static void         *ft_alloc(size_t size)
     return (NULL);
 }
 
+/* void                *ft_malloc(size_t size) */
 void                *malloc(size_t size)
 {
     static int  init = 0;
     void        *p;
 
+    write(1, "M\n", 2);
     p = NULL;
-    write(1, "X\n", 2);
     if ((int)size <= 0)
         return (NULL);
     if (!init)

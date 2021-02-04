@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:20:29 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/03 17:03:36 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/04 17:24:14 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 # define STRUCT(x) ft_getalign(sizeof(x), 16)
 # define TINY_ZONE ((TINY + STRUCT(t_page) + STRUCT(t_block)) * 100)
 # define SMALL_ZONE ((SMALL + STRUCT(t_page) + STRUCT(t_block)) * 100)
+# define T 1
+# define S 2
+# define L 3
 
 # include "../libft/include/libft.h"
 # include <sys/mman.h>

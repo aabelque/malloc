@@ -6,14 +6,14 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 17:09:37 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/03 17:02:17 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/04 16:56:32 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 /* #include "../include/malloc.h" */
 
-static void     print_mem(t_page *page, int *i)
+static inline void     print_mem(t_page *page, int *i)
 {
     ft_putstr(ft_lltoa_base((long long)page, 16));
     write(1, "\n", 1);
