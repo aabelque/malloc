@@ -2,6 +2,8 @@
 #include <errno.h>
 #include <limits.h>
 
+#define M (1024 * 1024)
+
 void print(char *s)
 {
     write(1, s, strlen(s));
@@ -18,13 +20,23 @@ int main()
 
 	/* char *addr; */
 
-	char *str, *ptr;
-	if (!(str = ft_malloc(10)))
-		return 0;
-	printf("Malloc OK\n");
-	if (!(ptr = ft_realloc("wiwiwiwi", 12)))
-		return 0;
-	printf("Realloc OK\n");
+	char *addr1;
+	char *addr3;
+
+	addr1 = (char*)malloc(16*M);
+	strcpy(addr1, "Bonjours\n");
+	print(addr1);
+	addr3 = (char*)realloc(addr1, 128*M);
+	addr3[127*M] = 42;
+	print(addr3);
+	/* return (0); */
+	/* char *str, *ptr; */
+	/* if (!(str = ft_malloc(10))) */
+	/* 	return 0; */
+	/* printf("Malloc OK\n"); */
+	/* if (!(ptr = ft_realloc("wiwiwiwi", 12))) */
+	/* 	return 0; */
+	/* printf("Realloc OK\n"); */
 	/* addr = ft_malloc(16); */
 	/* ft_free(NULL); */
 	/* ft_free((void *)addr + 5); */
