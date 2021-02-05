@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/02 19:15:13 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/05 19:05:51 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/05 19:37:13 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,14 @@ static void		*ft_find_ptr(t_page **zone, void *ptr, size_t len)
 			{
 				if (len <= blk->len)
 					return (ptr);
-				new = malloc(len);
-				ft_memcpy(new, ptr, STRUCT(len));
-				free(ptr);
-				return (new);
 			}
 			blk = blk->nxt;
 		}
 		*zone = (*zone)->nxt;
 	}
+	new = malloc(len);
+	ft_memcpy(new, ptr, STRUCT(len));
+	free(ptr);
 	return (new);
 }
 
