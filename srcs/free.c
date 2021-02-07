@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/05 10:02:34 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/07 22:01:06 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static int		ft_find_free(t_page *page, void *ptr)
 	return (0);
 }
 
-static void		ft_defrag(t_block **curr, t_block **prev, t_block **next)
+static void		ft_defrag(t_block **curr, t_block **prev)
 {
 	if ((*prev)->free && (*prev != *curr))
 	{
@@ -65,39 +65,29 @@ static void		ft_defrag(t_block **curr, t_block **prev, t_block **next)
 		*curr = *prev;
 		(*curr)->len = (long)(*curr)->nxt - (long)*curr;
 	}
-	else if ((*next)->free && (*next != *curr))
-	{
-		(*next)->prv = (*curr)->prv;
-		(*curr)->nxt = (*next)->nxt;
-		*next = *curr;
-		(*next)->len = (long)(*curr)->nxt - (long)*curr;
-	}
 }
 
 static void		ft_find_fragment(t_page *page)
 {
 	t_block		*curr;
-	t_block		*next;
 	t_block		*prev;
 
 	if (!page)
 		return ;
 	curr = page->blk;
-	next = curr->nxt;
-	prev = curr->prv;
-	while (curr && curr->nxt)
+	prev = curr;
+	while (curr)
 	{
-		if (curr->free && (next->free || prev->free))
-			ft_defrag(&curr, &prev, &next);
-		curr = next;
-		prev = curr->prv;
-		next = next->nxt;
+		if (curr->free && prev)
+			if (prev->free)
+				ft_defrag(&curr, &prev);
+		prev = curr;
+		curr = curr->nxt;
 	}
 }
 
 void			free(void *ptr)
 {
-	write(1, "X\n", 2);
 	if (!ptr)
 		return ;
 	if (ft_find_free(g_lst.tiny, ptr))
