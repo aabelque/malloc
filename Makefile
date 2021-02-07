@@ -6,7 +6,7 @@
 #    By: azziz <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/11 10:06:32 by azziz             #+#    #+#              #
-#    Updated: 2021/02/04 18:12:21 by aabelque         ###   ########.fr        #
+#    Updated: 2021/02/07 23:36:49 by aabelque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,39 +17,38 @@ endif
 H_DIR = include/
 C_DIR = srcs/
 O_DIR = objs/
-LIBFT = libft/
 
 NAME = libft_malloc.so
 NNAME = libft_malloc
 
 MAKE = make
 CC = gcc
-CFLAG = -Wall -Wextra -Werror 
+DEBUG = -g3
+CFLAG = -Wall -Wextra -Werror -Wpadded
 
 SRC = malloc.c \
 	  free.c \
 	  utils.c \
 	  show_alloc_mem.c \
-	  realloc.c
+	  realloc.c \
+	  calloc.c \
+	  libft.c
 
 OBJS = $(addprefix $(O_DIR),$(SRC:.c=.o))
 
 all: $(NAME)
 	
 $(NAME): $(OBJS)
-	@make -C $(LIBFT)
-	@$(CC) -g -shared -o $(NNAME)_$(HOSTTYPE).so -L $(LIBFT) -lft
+	@$(CC) $(DEBUG) -shared -o $(NNAME)_$(HOSTTYPE).so $(OBJS)
 	@ar rc malloc.a $(OBJS)
 	@ranlib malloc.a
+	@rm -rf $(NAME)
 	@ln -sf $(NNAME)_$(HOSTTYPE).so $(NAME)
 	@tput dl; tput el1; tput cub 100; echo "\033[33mBuilt library:\033[0m \033[32;1;4m$(notdir $@)\033[0m"
 
 $(OBJS): $(O_DIR)%.o: $(C_DIR)%.c
 	@mkdir $(O_DIR) 2> /dev/null || echo "" > /dev/null
-	@$(CC) -g $(CFLAGS) -o $@ -c $< -I$(H_DIR) -I$(LIBFT)
-
-normelibft:
-	$(MAKE) -C $(LIBFT) norme
+	@$(CC) $(DEBUG) $(CFLAGS) -o $@ -c $< -I$(H_DIR)
 
 norme:
 	@norminette $(C_DIR)
@@ -57,11 +56,9 @@ norme:
 	@echo "\033[3;32m[ ✔ ] Norme is done.\033[0m"
 
 clean:
-	@make -C $(LIBFT) clean
 	@rm -rf $(O_DIR) 2> /dev/null || echo "" > /dev/null
 
 fclean: clean
-	@make -C $(LIBFT) fclean
 	@rm -rf malloc.a 2> /dev/null || echo "" > /dev/null
 	@rm -rf $(NAME) 2> /dev/null || echo "" > /dev/null
 	@rm -rf $(NNAME)_$(HOSTTYPE).so 2> /dev/null || echo "" > /dev/null

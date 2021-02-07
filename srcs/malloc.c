@@ -6,13 +6,14 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/07 20:59:42 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/07 23:21:21 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-static void			ft_newblock(t_block **new, t_block *blk, size_t sz, t_page **page)
+static void			ft_newblock(t_block **new, t_block *blk, size_t sz,
+		t_page **page)
 {
 	*new = (void *)blk->p + blk->len;
 	(*new)->len = sz;
@@ -21,7 +22,7 @@ static void			ft_newblock(t_block **new, t_block *blk, size_t sz, t_page **page)
 	(*new)->nxt = NULL;
 	(*new)->prv = (void *)blk;
 	blk->nxt = (void *)*new;
-	(*page)->rest -= sz - STRUCT(t_block);
+	(*page)->rest -= sz + STRUCT(t_block);
 	if (!(*page)->rest)
 		(*page)->free = 0;
 }
@@ -40,7 +41,7 @@ t_block				*ft_findblock(t_page **page, size_t sz)
 		{
 			ft_init_block(&new, &blk, sz + STRUCT(t_block));
 			blk->len = sz;
-			(*page)->rest -= sz - STRUCT(t_block);
+			(*page)->rest -= sz + STRUCT(t_block);
 			return (blk);
 		}
 		last = blk;
@@ -79,7 +80,6 @@ static void			*ft_alloc(size_t size)
 {
 	struct rlimit	rlp;
 
-	size = ft_getalign(size, 16);
 	getrlimit(RLIMIT_DATA, &rlp);
 	if (size > rlp.rlim_max || size > rlp.rlim_cur)
 		return (NULL);
@@ -92,10 +92,10 @@ static void			*ft_alloc(size_t size)
 	return (NULL);
 }
 
-/* void                *ft_malloc(size_t size) */
 void				*malloc(size_t size)
 {
 	static int		init = 0;
+	size_t			sz;
 	void			*p;
 
 	p = NULL;
@@ -110,6 +110,7 @@ void				*malloc(size_t size)
 		g_lst.large = NULL;
 		init++;
 	}
-	p = ft_alloc(size);
+	sz = ft_getalign(size, 16);
+	p = ft_alloc(sz);
 	return (p);
 }

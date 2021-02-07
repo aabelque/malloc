@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/02 19:15:13 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/07 21:59:07 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/07 23:43:20 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static void		*ft_find_ptr(t_page **zone, void *ptr, size_t len)
 {
-	void		*new;
-	t_block		*blk;
+	void	*new;
+	t_block	*blk;
 
 	new = NULL;
 	if (!(*zone))
@@ -64,13 +64,12 @@ static void		*ft_find_zone(void *p, size_t size)
 			return (ft_find_ptr(&g_lst.large, p, size));
 		g_lst.large = g_lst.large->nxt;
 	}
-	return (malloc(size));
+	return (NULL);
 }
 
-/* void    *ft_realloc(void *ptr, size_t size) */
 void			*realloc(void *ptr, size_t size)
 {
-	void		*p;
+	void	*p;
 
 	if ((int)size < 0)
 		return (NULL);
@@ -82,5 +81,14 @@ void			*realloc(void *ptr, size_t size)
 		return (malloc(16));
 	}
 	p = ft_find_zone(ptr, size);
+	return (p);
+}
+
+void			*reallocf(void *ptr, size_t size)
+{
+	void	*p;
+
+	if (!(p = realloc(ptr, size)))
+		free(ptr);
 	return (p);
 }
