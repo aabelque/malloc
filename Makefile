@@ -6,7 +6,7 @@
 #    By: azziz <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/11 10:06:32 by azziz             #+#    #+#              #
-#    Updated: 2021/02/08 15:11:50 by aabelque         ###   ########.fr        #
+#    Updated: 2021/02/08 17:16:35 by aabelque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ $(NAME): $(OBJS)
 
 $(OBJS): $(O_DIR)%.o: $(C_DIR)%.c
 	@mkdir $(O_DIR) 2> /dev/null || echo "" > /dev/null
-	@$(CC) $(DEBUG) $(CFLAGS) -o $@ -c $< -I$(H_DIR)
+	@$(CC) $(DEBUG) $(CFLAGS) -o $@ -c $< -fPIC -I$(H_DIR)
 
 norme:
 	@norminette $(C_DIR)
