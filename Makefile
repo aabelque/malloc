@@ -6,7 +6,7 @@
 #    By: azziz <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/11 10:06:32 by azziz             #+#    #+#              #
-#    Updated: 2021/02/07 23:36:49 by aabelque         ###   ########.fr        #
+#    Updated: 2021/02/08 15:11:50 by aabelque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,6 @@ O_DIR = objs/
 NAME = libft_malloc.so
 NNAME = libft_malloc
 
-MAKE = make
 CC = gcc
 DEBUG = -g3
 CFLAG = -Wall -Wextra -Werror -Wpadded
