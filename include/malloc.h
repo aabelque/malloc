@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:20:29 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/09 09:36:09 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/09 17:45:19 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,6 @@ void			ft_putnbr(int n);
 size_t			ft_strlen(const char *s);
 void			ft_putstr(char const *s);
 void			*ft_memcpy(void *dest, const void *src, size_t n);
+void			show_heap_list();
 
 #endif

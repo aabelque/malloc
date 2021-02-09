@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/09 09:56:19 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/09 19:33:35 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,20 @@ void		ft_can_i_free(t_page **zone)
 {
 	t_page	*prev;
 	t_page	*curr;
+	int		diff;
 
 	curr = *zone;
 	prev = NULL;
+	diff = STRUCT(t_page);
 	while (curr)
 	{
-		if (curr->rest == curr->size)
+		if ((curr->rest + diff) == curr->size)
 		{
 			if (prev)
 				prev->nxt = curr->nxt;
-			if (!(munmap(curr, curr->size + STRUCT(t_page))))
+			if (!(munmap(curr, curr->size)))
 			{
-				curr = NULL;
+				*zone = NULL;
 				return ;
 			}
 		}
@@ -85,7 +87,7 @@ void		*ft_create_zone(t_page *prev, size_t size, size_t len)
 	if (!(new = (t_page *)mmap(0, size, PROT, FLGS, -1, 0)))
 		return (NULL);
 	new->nxt = NULL;
-	new->rest = size - (STRUCT(t_page) + STRUCT(t_block));
+	new->rest = size - (STRUCT(t_page) + STRUCT(t_block) + len);
 	new->size = size;
 	new->free = 1;
 	new->blk = (void *)new + STRUCT(t_page);
