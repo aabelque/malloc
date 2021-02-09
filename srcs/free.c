@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/07 22:01:06 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/09 09:48:10 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,25 @@
 static int		ft_free_large(t_page **page, void *ptr)
 {
 	t_page		*zone;
+	t_page		*prev;
 
 	if (!*page)
 		return (-1);
 	zone = *page;
-	while (zone && zone->nxt)
+	prev = NULL;
+	while (zone)
 	{
 		if (zone->blk->p == ptr)
+		{
+			if (prev)
+				prev->nxt = zone->nxt;
 			if (!(munmap(zone, zone->blk->len)))
 			{
 				*page = NULL;
 				return (0);
 			}
+		}
+		prev = zone;
 		zone = zone->nxt;
 	}
 	return (-1);
@@ -47,13 +54,13 @@ static int		ft_find_free(t_page *page, void *ptr)
 			{
 				blk->free = 1;
 				page->rest += blk->len + STRUCT(t_block);
-				return (1);
+				return (0);
 			}
 			blk = blk->nxt;
 		}
 		page = page->nxt;
 	}
-	return (0);
+	return (-1);
 }
 
 static void		ft_defrag(t_block **curr, t_block **prev)
@@ -90,16 +97,16 @@ void			free(void *ptr)
 {
 	if (!ptr)
 		return ;
-	if (ft_find_free(g_lst.tiny, ptr))
+	if (!ft_find_free(g_lst.tiny, ptr))
 	{
 		ft_find_fragment(g_lst.tiny);
-		ft_can_i_free(g_lst.tiny);
+		ft_can_i_free(&g_lst.tiny);
 		return ;
 	}
-	else if (ft_find_free(g_lst.small, ptr))
+	else if (!ft_find_free(g_lst.small, ptr))
 	{
 		ft_find_fragment(g_lst.small);
-		ft_can_i_free(g_lst.small);
+		ft_can_i_free(&g_lst.small);
 		return ;
 	}
 	else

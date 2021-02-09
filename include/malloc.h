@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:20:29 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/07 23:41:04 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/09 09:36:09 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void			show_alloc_mem(void);
 void			*ft_create_zone(t_page *prev, size_t size, size_t len);
 void			*ft_alloc_large(t_page **page, size_t len);
 void			ft_init_block(t_block **nw, t_block **blk, size_t len);
-void			ft_can_i_free(t_page *zone);
+void			ft_can_i_free(t_page **zone);
 void			*realloc(void *ptr, size_t size);
 t_block			*ft_findblock(t_page **page, size_t sz);
 void			ft_putchar(char c);

@@ -6,23 +6,33 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/07 22:54:19 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/09 09:56:19 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-void		ft_can_i_free(t_page *zone)
+void		ft_can_i_free(t_page **zone)
 {
-	while (zone && zone->nxt)
+	t_page	*prev;
+	t_page	*curr;
+
+	curr = *zone;
+	prev = NULL;
+	while (curr)
 	{
-		if (zone->rest == zone->size)
-			if (!(munmap(zone, zone->size + STRUCT(t_page))))
+		if (curr->rest == curr->size)
+		{
+			if (prev)
+				prev->nxt = curr->nxt;
+			if (!(munmap(curr, curr->size + STRUCT(t_page))))
 			{
-				zone = NULL;
+				curr = NULL;
 				return ;
 			}
-		zone = zone->nxt;
+		}
+		prev = curr;
+		curr = curr->nxt;
 	}
 }
 
