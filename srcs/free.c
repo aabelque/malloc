@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/09 09:48:10 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/10 17:27:42 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,31 @@
 
 static int		ft_free_large(t_page **page, void *ptr)
 {
-	t_page		*zone;
+	t_page		*tmp;
 	t_page		*prev;
 
-	if (!*page)
-		return (-1);
-	zone = *page;
+	tmp = *page;
 	prev = NULL;
-	while (zone)
+	if (tmp && (tmp->blk->p == ptr))
 	{
-		if (zone->blk->p == ptr)
+		*page = tmp->nxt;
+		if (!(munmap(tmp, tmp->blk->len)))
 		{
-			if (prev)
-				prev->nxt = zone->nxt;
-			if (!(munmap(zone, zone->blk->len)))
-			{
-				*page = NULL;
-				return (0);
-			}
+			tmp = NULL;
+			return (0);
 		}
-		prev = zone;
-		zone = zone->nxt;
 	}
-	return (-1);
+	while (tmp && (tmp->blk->p != ptr))
+	{
+		prev = tmp;
+		tmp = tmp->nxt;
+	}
+	if (!tmp)
+		return (-1);
+	prev->nxt = tmp->nxt;
+	if (!(munmap(tmp, tmp->blk->len)))
+		tmp = NULL;
+	return (0);
 }
 
 static int		ft_find_free(t_page *page, void *ptr)
@@ -95,18 +97,22 @@ static void		ft_find_fragment(t_page *page)
 
 void			free(void *ptr)
 {
+	int			diff;
+
 	if (!ptr)
 		return ;
 	if (!ft_find_free(g_lst.tiny, ptr))
 	{
 		ft_find_fragment(g_lst.tiny);
-		ft_can_i_free(&g_lst.tiny);
+		diff = STRUCT(t_page);
+		ft_free_page(&g_lst.tiny, diff);
 		return ;
 	}
 	else if (!ft_find_free(g_lst.small, ptr))
 	{
 		ft_find_fragment(g_lst.small);
-		ft_can_i_free(&g_lst.small);
+		diff = STRUCT(t_page);
+		ft_free_page(&g_lst.small, diff);
 		return ;
 	}
 	else

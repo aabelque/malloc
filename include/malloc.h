@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:20:29 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/09 17:45:19 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/10 17:37:06 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@
 # define SMALL PS
 # define TINY PS / 4
 # define STRUCT(x) ft_getalign(sizeof(x), 16)
-# define TINY_ZONE ((TINY + STRUCT(t_page) + STRUCT(t_block)) * 100)
-# define SMALL_ZONE ((SMALL + STRUCT(t_page) + STRUCT(t_block)) * 100)
+# define TINY_ZONE (TINY * 100)
+# define SMALL_ZONE (SMALL * 100)
 
 typedef struct	s_block
 {
@@ -63,7 +63,7 @@ void			show_alloc_mem(void);
 void			*ft_create_zone(t_page *prev, size_t size, size_t len);
 void			*ft_alloc_large(t_page **page, size_t len);
 void			ft_init_block(t_block **nw, t_block **blk, size_t len);
-void			ft_can_i_free(t_page **zone);
+void			ft_free_page(t_page **zone, int diff);
 void			*realloc(void *ptr, size_t size);
 t_block			*ft_findblock(t_page **page, size_t sz);
 void			ft_putchar(char c);

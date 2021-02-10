@@ -6,60 +6,12 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 17:09:37 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/09 17:48:44 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/10 16:17:50 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <stdio.h>
-
-void		show_heap_list()
-{
-    int i = 0;
-    t_page *tiny = g_lst.tiny;
-    t_page *small = g_lst.small;
-    t_page *large = g_lst.large;
-
-    printf("DEBUG: g_lst list\n");
-
-    while (tiny) {
-        printf(
-            "%d. tiny %p, next: %p (size: %zu, rest: %zu, free_space: %d)\n",
-            i,
-            tiny,
-            tiny->nxt,
-            tiny->size,
-            tiny->rest,
-            tiny->free);
-        tiny = tiny->nxt;
-        i++;
-    }
-
-    while (small) {
-        printf(
-            "%d. small %p, next: %p (size: %zu, rest: %zu, free_space: %d)\n",
-            i,
-            small,
-            small->nxt,
-            small->size,
-            small->rest,
-            small->free);
-        small = small->nxt;
-        i++;
-    }
-    while (large) {
-        printf(
-            "%d. large %p, next: %p (size: %zu, rest: %zu, free_space: %d)\n",
-            i,
-            large,
-            large->nxt,
-            large->size,
-            large->rest,
-            large->free);
-        large = large->nxt;
-        i++;
-    }
-}
 
 static inline void		ft_hexdump(long n)
 {
@@ -90,9 +42,22 @@ static inline void		print_mem_large(t_page *page, int *i)
 	}
 }
 
-static inline void		print_mem(t_page *page, int *i)
+static inline void		print_mem(t_block *blk)
+{
+	write(1, "0X", 2);
+	ft_hexdump((long)blk->p);
+	ft_putstr(" - ");
+	write(1, "0X", 2);
+	ft_hexdump((long)blk->p + blk->len);
+	ft_putstr(" : ");
+	ft_putnbr(blk->len);
+	ft_putstr(" octets\n");
+}
+
+static inline void		search_mem(t_page *page, int *i)
 {
 	t_block	*first;
+
 	ft_hexdump((long)page);
 	write(1, "\n", 1);
 	while (page)
@@ -102,14 +67,7 @@ static inline void		print_mem(t_page *page, int *i)
 		{
 			if (!page->blk->free)
 			{
-				write(1, "0X", 2);
-				ft_hexdump((long)page->blk->p);
-				ft_putstr(" - ");
-				write(1, "0X", 2);
-				ft_hexdump((long)page->blk->p + page->blk->len);
-				ft_putstr(" : ");
-				ft_putnbr(page->blk->len);
-				ft_putstr(" octets\n");
+				print_mem(page->blk);
 				*i += page->blk->len;
 			}
 			page->blk = page->blk->nxt;
@@ -132,10 +90,10 @@ void					show_alloc_mem(void)
 	small = g_lst.small;
 	large = g_lst.large;
 	ft_putstr("TINY : ");
-	print_mem(g_lst.tiny, &i);
+	search_mem(g_lst.tiny, &i);
 	write(1, "\n", 1);
 	ft_putstr("SMALL : ");
-	print_mem(g_lst.small, &i);
+	search_mem(g_lst.small, &i);
 	write(1, "\n", 1);
 	ft_putstr("LARGE : ");
 	print_mem_large(g_lst.large, &i);

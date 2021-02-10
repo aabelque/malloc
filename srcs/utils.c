@@ -6,36 +6,38 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/09 19:33:35 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/10 17:09:21 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-void		ft_can_i_free(t_page **zone)
+void		ft_free_page(t_page **zone, int diff)
 {
 	t_page	*prev;
-	t_page	*curr;
-	int		diff;
+	t_page	*tmp;
 
-	curr = *zone;
+	tmp = *zone;
 	prev = NULL;
-	diff = STRUCT(t_page);
-	while (curr)
+	if (tmp && (tmp->size == (tmp->rest + diff)))
 	{
-		if ((curr->rest + diff) == curr->size)
+		*zone = tmp->nxt;
+		if (!(munmap(tmp, tmp->size)))
 		{
-			if (prev)
-				prev->nxt = curr->nxt;
-			if (!(munmap(curr, curr->size)))
-			{
-				*zone = NULL;
-				return ;
-			}
+			tmp = NULL;
+			return ;
 		}
-		prev = curr;
-		curr = curr->nxt;
 	}
+	while (tmp && (tmp->size != (tmp->rest + diff)))
+	{
+		prev = tmp;
+		tmp = tmp->nxt;
+	}
+	if (!tmp)
+		return ;
+	prev->nxt = tmp->nxt;
+	if (!(munmap(tmp, tmp->size)))
+		tmp = NULL;
 }
 
 void		ft_init_block(t_block **nw, t_block **blk, size_t len)
@@ -44,11 +46,11 @@ void		ft_init_block(t_block **nw, t_block **blk, size_t len)
 	(*blk)->p = (void *)(*blk) + STRUCT(t_block);
 	if (((void *)(*blk) + len + 64) <= (void *)(*blk)->nxt)
 	{
-		(*nw) = (void*)(*blk) + len;
+		(*nw) = (void *)(*blk) + len;
 		(*nw)->free = 1;
-		(*nw)->nxt = (void*)(*blk)->nxt;
-		(*nw)->prv = (void*)(*blk);
-		(*blk)->nxt = (void*)(*nw);
+		(*nw)->nxt = (void *)(*blk)->nxt;
+		(*nw)->prv = (void *)(*blk);
+		(*blk)->nxt = (void *)(*nw);
 		(*nw)->len = (long)(*nw)->nxt - (long)(*nw);
 	}
 }
