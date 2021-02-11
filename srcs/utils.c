@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/10 17:09:21 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/11 10:44:07 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,14 @@ void		ft_init_block(t_block **nw, t_block **blk, size_t len)
 	}
 }
 
-void		*ft_alloc_large(t_page **page, size_t len)
+void		*ft_alloc_large(t_page **page, size_t len, int sz_struct)
 {
 	t_page	*new;
 
-	if (!(new = (t_page *)mmap(0, len, PROT, FLGS, -1, 0)))
+	if (!(new = (t_page *)mmap(0, len + sz_struct, PROT, FLGS, -1, 0)))
 		return (NULL);
 	new->nxt = NULL;
-	new->size = len;
+	new->size = len + sz_struct;
 	new->rest = 0;
 	new->free = 0;
 	new->blk = (void *)new + STRUCT(t_page);

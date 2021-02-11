@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/09 19:35:42 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/11 10:44:59 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,23 +79,24 @@ static void			*ft_getblock(t_page **zone, size_t len, size_t len_zone)
 static void			*ft_alloc(size_t size)
 {
 	struct rlimit	rlp;
+	size_t			align;
 
 	getrlimit(RLIMIT_DATA, &rlp);
-	if (size > rlp.rlim_max || size > rlp.rlim_cur)
+	align = ft_getalign(size, 16);
+	if (align > rlp.rlim_cur || size > rlp.rlim_cur)
 		return (NULL);
-	if (size <= TINY)
-		return (ft_getblock(&g_lst.tiny, size, TINY_ZONE));
-	else if (size <= SMALL)
-		return (ft_getblock(&g_lst.small, size, SMALL_ZONE));
+	if (align <= TINY)
+		return (ft_getblock(&g_lst.tiny, align, TINY_ZONE));
+	else if (align <= SMALL)
+		return (ft_getblock(&g_lst.small, align, SMALL_ZONE));
 	else
-		return (ft_alloc_large(&g_lst.large, size));
+		return (ft_alloc_large(&g_lst.large, align, STRUCT(t_page) + STRUCT(t_block)));
 	return (NULL);
 }
 
 void				*malloc(size_t size)
 {
 	static int		init = 0;
-	size_t			sz;
 	void			*p;
 
 	p = NULL;
@@ -110,7 +111,6 @@ void				*malloc(size_t size)
 		g_lst.large = NULL;
 		init++;
 	}
-	sz = ft_getalign(size, 16);
-	p = ft_alloc(sz);
+	p = ft_alloc(size);
 	return (p);
 }
