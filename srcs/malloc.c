@@ -6,25 +6,26 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/11 10:44:59 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/11 14:29:18 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-static void			ft_newblock(t_block **new, t_block *blk, size_t sz,
+static t_block			*ft_newblock(t_block *new, t_block *blk, size_t sz,
 		t_page **page)
 {
-	*new = (void *)blk->p + blk->len;
-	(*new)->len = sz;
-	(*new)->free = 0;
-	(*new)->p = (void *)(*new) + STRUCT(t_block);
-	(*new)->nxt = NULL;
-	(*new)->prv = (void *)blk;
-	blk->nxt = (void *)*new;
+	new = (void *)blk->p + blk->len;
+	new->len = sz;
+	new->free = 0;
+	new->p = (char *)new + STRUCT(t_block);
+	new->nxt = NULL;
+	new->prv = blk;
+	blk->nxt = new;
 	(*page)->rest -= sz + STRUCT(t_block);
 	if (!(*page)->rest)
 		(*page)->free = 0;
+	return (new);
 }
 
 t_block				*ft_findblock(t_page **page, size_t sz)
@@ -33,13 +34,14 @@ t_block				*ft_findblock(t_page **page, size_t sz)
 	t_block			*last;
 	t_block			*new;
 
-	blk = (void *)(*page)->blk;
+	blk = (*page)->blk;
 	last = blk;
+	new = NULL;
 	while (blk)
 	{
 		if (blk->free && (sz + STRUCT(t_block)) <= blk->len)
 		{
-			ft_init_block(&new, &blk, sz + STRUCT(t_block));
+			blk = ft_init_block(new, blk, sz + STRUCT(t_block));
 			blk->len = sz;
 			(*page)->rest -= sz + STRUCT(t_block);
 			return (blk);
@@ -47,8 +49,7 @@ t_block				*ft_findblock(t_page **page, size_t sz)
 		last = blk;
 		blk = blk->nxt;
 	}
-	ft_newblock(&new, last, sz, page);
-	return (new);
+	return(ft_newblock(new, last, sz, page));
 }
 
 static void			*ft_getblock(t_page **zone, size_t len, size_t len_zone)
@@ -59,7 +60,7 @@ static void			*ft_getblock(t_page **zone, size_t len, size_t len_zone)
 	if (!*zone)
 	{
 		*zone = (t_page *)ft_create_zone(*zone, len_zone, len);
-		return ((void *)(*zone)->blk->p);
+		return ((*zone)->blk->p);
 	}
 	page = *zone;
 	while (page)

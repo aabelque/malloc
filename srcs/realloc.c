@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/02 19:15:13 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/07 23:43:20 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/11 14:12:42 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,21 +45,21 @@ static void		*ft_find_zone(void *p, size_t size)
 {
 	while (g_lst.tiny)
 	{
-		if (p > (void *)g_lst.tiny && p < (void *)g_lst.tiny
+		if ((char *)p > (char *)g_lst.tiny && (char *)p < (char *)g_lst.tiny
 				+ g_lst.tiny->size)
 			return (ft_find_ptr(&g_lst.tiny, p, size));
 		g_lst.tiny = g_lst.tiny->nxt;
 	}
 	while (g_lst.small)
 	{
-		if (p > (void *)g_lst.small && p < (void *)g_lst.small
+		if ((char *)p > (char *)g_lst.small && (char *)p < (char *)g_lst.small
 				+ g_lst.small->size)
 			return (ft_find_ptr(&g_lst.small, p, size));
 		g_lst.small = g_lst.small->nxt;
 	}
 	while (g_lst.large)
 	{
-		if (p > (void *)g_lst.large && p < (void *)g_lst.large
+		if ((char *)p > (char *)g_lst.large && (char *)p < (char *)g_lst.large
 				+ g_lst.large->size)
 			return (ft_find_ptr(&g_lst.large, p, size));
 		g_lst.large = g_lst.large->nxt;

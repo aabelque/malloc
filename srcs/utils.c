@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/11 10:44:07 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/11 16:07:16 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,19 +40,20 @@ void		ft_free_page(t_page **zone, int diff)
 		tmp = NULL;
 }
 
-void		ft_init_block(t_block **nw, t_block **blk, size_t len)
+t_block			*ft_init_block(t_block *nw, t_block *blk, size_t len)
 {
-	(*blk)->free = 0;
-	(*blk)->p = (void *)(*blk) + STRUCT(t_block);
-	if (((void *)(*blk) + len + 64) <= (void *)(*blk)->nxt)
+	blk->free = 0;
+	blk->p = (char *)blk + STRUCT(t_block);
+	if ((blk + len + 64) <= blk->nxt)
 	{
-		(*nw) = (void *)(*blk) + len;
-		(*nw)->free = 1;
-		(*nw)->nxt = (void *)(*blk)->nxt;
-		(*nw)->prv = (void *)(*blk);
-		(*blk)->nxt = (void *)(*nw);
-		(*nw)->len = (long)(*nw)->nxt - (long)(*nw);
+		nw = blk + len;
+		nw->free = 1;
+		nw->nxt = blk->nxt;
+		nw->prv = blk;
+		blk->nxt = nw;
+		nw->len = (long)nw->nxt - (long)nw;
 	}
+	return (blk);
 }
 
 void		*ft_alloc_large(t_page **page, size_t len, int sz_struct)
@@ -65,17 +66,17 @@ void		*ft_alloc_large(t_page **page, size_t len, int sz_struct)
 	new->size = len + sz_struct;
 	new->rest = 0;
 	new->free = 0;
-	new->blk = (void *)new + STRUCT(t_page);
+	new->blk = (t_block *)new + STRUCT(t_page);
 	new->blk->free = 0;
 	new->blk->len = len;
-	new->blk->p = (void *)new->blk + STRUCT(t_block);
-	new->blk->nxt = (void *)new->blk->p + len;
-	new->blk->prv = (void *)new->blk;
+	new->blk->p = (char *)new->blk + STRUCT(t_block);
+	new->blk->nxt = (t_block *)new->blk->p + len;
+	new->blk->prv = (t_block *)new->blk;
 	if (*page)
 	{
 		while ((*page)->nxt)
 			*page = (*page)->nxt;
-		(*page)->nxt = (void *)new;
+		(*page)->nxt = new;
 		return (new->blk->p);
 	}
 	*page = new;
@@ -92,13 +93,13 @@ void		*ft_create_zone(t_page *prev, size_t size, size_t len)
 	new->rest = size - (STRUCT(t_page) + STRUCT(t_block) + len);
 	new->size = size;
 	new->free = 1;
-	new->blk = (void *)new + STRUCT(t_page);
+	new->blk = (t_block *)((char *)new + STRUCT(t_page));
 	new->blk->len = len;
 	new->blk->free = 0;
-	new->blk->p = (void *)new->blk + STRUCT(t_block);
+	new->blk->p = (char *)new->blk + STRUCT(t_block);
 	new->blk->nxt = NULL;
 	if (prev)
-		prev->nxt = (void *)new;
+		prev->nxt = new;
 	return ((void *)new);
 }
 
