@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/11 17:23:03 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/11 17:56:38 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,23 +43,25 @@ static int		ft_free_large(t_page **page, void *ptr)
 static int		ft_find_free(t_page *page, void *ptr)
 {
 	t_block		*blk;
+	t_page		*tmp;
 
 	if (!page)
 		return (-1);
+	tmp = page;
 	blk = page->blk;
-	while (page)
+	while (tmp)
 	{
 		while (blk)
 		{
 			if (ptr == blk->p)
 			{
 				blk->free = 1;
-				page->rest += blk->len + STRUCT(t_block);
+				tmp->rest += blk->len + STRUCT(t_block);
 				return (0);
 			}
 			blk = blk->nxt;
 		}
-		page = page->nxt;
+		tmp = tmp->nxt;
 	}
 	return (-1);
 }

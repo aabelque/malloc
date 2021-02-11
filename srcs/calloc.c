@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/07 23:23:50 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/11 17:42:07 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/11 17:54:21 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,6 @@ void	ft_bzero(void *p, size_t n)
 		((char *)p)[i] = '\0';
 		i++;
 	}
-	/* if (!n) */
-	/* 	return ; */
-	/* while ((*((char *)p++) = '\0')) */
-	/* 	; */
 }
 
 void	*calloc(size_t count, size_t size)
