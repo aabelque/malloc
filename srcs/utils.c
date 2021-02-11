@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/11 16:07:16 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/11 17:22:39 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,8 @@ void		ft_free_page(t_page **zone, int diff)
 	if (tmp && (tmp->size == (tmp->rest + diff)))
 	{
 		*zone = tmp->nxt;
-		if (!(munmap(tmp, tmp->size)))
-		{
-			tmp = NULL;
+		munmap((t_page *)tmp, tmp->size);
 			return ;
-		}
 	}
 	while (tmp && (tmp->size != (tmp->rest + diff)))
 	{
@@ -36,8 +33,7 @@ void		ft_free_page(t_page **zone, int diff)
 	if (!tmp)
 		return ;
 	prev->nxt = tmp->nxt;
-	if (!(munmap(tmp, tmp->size)))
-		tmp = NULL;
+	munmap((t_page *)tmp, tmp->size);
 }
 
 t_block			*ft_init_block(t_block *nw, t_block *blk, size_t len)

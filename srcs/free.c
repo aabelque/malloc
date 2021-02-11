@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/11 10:45:25 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/11 17:23:03 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int		ft_free_large(t_page **page, void *ptr)
 	if (tmp && (tmp->blk->p == ptr))
 	{
 		*page = tmp->nxt;
-		if (!(munmap(tmp, tmp->size)))
+		munmap((t_page *)tmp, tmp->size);
 		{
 			tmp = NULL;
 			return (0);
@@ -36,8 +36,7 @@ static int		ft_free_large(t_page **page, void *ptr)
 	if (!tmp)
 		return (-1);
 	prev->nxt = tmp->nxt;
-	if (!(munmap(tmp, tmp->size)))
-		tmp = NULL;
+	munmap((t_page *)tmp, tmp->size);
 	return (0);
 }
 
