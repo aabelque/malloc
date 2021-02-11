@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/11 17:22:39 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/11 18:07:51 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,10 @@ void		*ft_alloc_large(t_page **page, size_t len, int sz_struct)
 	t_page	*new;
 
 	if (!(new = (t_page *)mmap(0, len + sz_struct, PROT, FLGS, -1, 0)))
+	{
+		ft_putstr("mmap large a renvoye NULL\n");
 		return (NULL);
+	}
 	new->nxt = NULL;
 	new->size = len + sz_struct;
 	new->rest = 0;
@@ -84,7 +87,10 @@ void		*ft_create_zone(t_page *prev, size_t size, size_t len)
 	t_page	*new;
 
 	if (!(new = (t_page *)mmap(0, size, PROT, FLGS, -1, 0)))
+	{
+		ft_putstr("mmap a renvoye NULL\n");
 		return (NULL);
+	}
 	new->nxt = NULL;
 	new->rest = size - (STRUCT(t_page) + STRUCT(t_block) + len);
 	new->size = size;
