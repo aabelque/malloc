@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 17:09:37 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/12 17:25:43 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/12 18:11:09 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,11 @@ static inline void		search_mem(t_page *page, int *i)
 	t_block	*first;
 	t_page	*head;
 
-	/* ft_hexdump((long)page); */
-	/* write(1, "\n", 1); */
+	ft_hexdump((long)page);
+	write(1, "\n", 1);
 	head = page;
 	while (page)
 	{
-		ft_hexdump((long)page);
-		write(1, "\n", 1);
 		first = page->blk;
 		while (page->blk)
 		{
