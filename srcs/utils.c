@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/12 17:30:06 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/12 18:47:39 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,12 @@ void		*ft_alloc_large(t_page **lst, size_t len, int sz_struct)
 	new->size = len + sz_struct;
 	new->rest = 0;
 	new->free = 0;
-	new->blk = (t_block *)new + STRUCT(t_page);
+	new->blk = (t_block *)((char *)new + STRUCT(t_page));
 	new->blk->free = 0;
 	new->blk->len = len;
 	new->blk->p = (char *)new->blk + STRUCT(t_block);
-	new->blk->nxt = (t_block *)new->blk->p + len;
-	new->blk->prv = (t_block *)new->blk;
+	new->blk->nxt = NULL;
+	new->blk->prv = NULL;
 	if (last)
 	{
 		while (last->nxt)
