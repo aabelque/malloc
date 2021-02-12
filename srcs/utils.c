@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/11 18:07:51 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/12 17:30:06 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,14 @@ t_block			*ft_init_block(t_block *nw, t_block *blk, size_t len)
 	return (blk);
 }
 
-void		*ft_alloc_large(t_page **page, size_t len, int sz_struct)
+void		*ft_alloc_large(t_page **lst, size_t len, int sz_struct)
 {
 	t_page	*new;
+	t_page	*last;
 
+	last = *lst;
 	if (!(new = (t_page *)mmap(0, len + sz_struct, PROT, FLGS, -1, 0)))
-	{
-		ft_putstr("mmap large a renvoye NULL\n");
 		return (NULL);
-	}
 	new->nxt = NULL;
 	new->size = len + sz_struct;
 	new->rest = 0;
@@ -71,26 +70,25 @@ void		*ft_alloc_large(t_page **page, size_t len, int sz_struct)
 	new->blk->p = (char *)new->blk + STRUCT(t_block);
 	new->blk->nxt = (t_block *)new->blk->p + len;
 	new->blk->prv = (t_block *)new->blk;
-	if (*page)
+	if (last)
 	{
-		while ((*page)->nxt)
-			*page = (*page)->nxt;
-		(*page)->nxt = new;
+		while (last->nxt)
+			last = last->nxt;
+		last->nxt = new;
 		return (new->blk->p);
 	}
-	*page = new;
-	return ((*page)->blk->p);
+	*lst = new;
+	return ((*lst)->blk->p);
 }
 
-void		*ft_create_zone(t_page *prev, size_t size, size_t len)
+void		*ft_create_zone(t_page **lst, size_t size, size_t len)
 {
 	t_page	*new;
+	t_page	*last;
 
+	last = *lst;
 	if (!(new = (t_page *)mmap(0, size, PROT, FLGS, -1, 0)))
-	{
-		ft_putstr("mmap a renvoye NULL\n");
 		return (NULL);
-	}
 	new->nxt = NULL;
 	new->rest = size - (STRUCT(t_page) + STRUCT(t_block) + len);
 	new->size = size;
@@ -100,9 +98,16 @@ void		*ft_create_zone(t_page *prev, size_t size, size_t len)
 	new->blk->free = 0;
 	new->blk->p = (char *)new->blk + STRUCT(t_block);
 	new->blk->nxt = NULL;
-	if (prev)
-		prev->nxt = new;
-	return ((void *)new);
+	if (last)
+	{
+		while (last->nxt)
+			last = last->nxt;
+		last->nxt = new;
+		return (new);
+	}
+	/* if (prev) */
+	/* 	prev->nxt = new; */
+	return (new);
 }
 
 size_t		ft_getalign(size_t size, int align)

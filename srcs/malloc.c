@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/11 14:29:18 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/12 16:39:51 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static t_block			*ft_newblock(t_block *new, t_block *blk, size_t sz,
 	new->nxt = NULL;
 	new->prv = blk;
 	blk->nxt = new;
-	(*page)->rest -= sz + STRUCT(t_block);
+	(*page)->rest -= (sz + STRUCT(t_block));
 	if (!(*page)->rest)
 		(*page)->free = 0;
 	return (new);
@@ -59,7 +59,7 @@ static void			*ft_getblock(t_page **zone, size_t len, size_t len_zone)
 
 	if (!*zone)
 	{
-		*zone = (t_page *)ft_create_zone(*zone, len_zone, len);
+		*zone = (t_page *)ft_create_zone(zone, len_zone, len);
 		return ((*zone)->blk->p);
 	}
 	page = *zone;
@@ -73,7 +73,7 @@ static void			*ft_getblock(t_page **zone, size_t len, size_t len_zone)
 		}
 		page = page->nxt;
 	}
-	page = ft_create_zone(*zone, len_zone, len);
+	page = (t_page *)ft_create_zone(zone, len_zone, len);
 	return (page->blk->p);
 }
 

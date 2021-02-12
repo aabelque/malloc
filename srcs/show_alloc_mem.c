@@ -6,14 +6,14 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 17:09:37 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/10 16:17:50 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/12 17:25:43 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <stdio.h>
 
-static inline void		ft_hexdump(long n)
+inline void		ft_hexdump(long n)
 {
 	if (n > 15)
 		ft_hexdump(n / 16);
@@ -25,8 +25,11 @@ static inline void		ft_hexdump(long n)
 
 static inline void		print_mem_large(t_page *page, int *i)
 {
+	t_page	*head;
+
 	ft_hexdump((long)page);
 	write(1, "\n", 1);
+	head = page;
 	while (page)
 	{
 		write(1, "0X", 2);
@@ -40,6 +43,7 @@ static inline void		print_mem_large(t_page *page, int *i)
 		*i += page->blk->len;
 		page = page->nxt;
 	}
+	page = head;
 }
 
 static inline void		print_mem(t_block *blk)
@@ -57,11 +61,15 @@ static inline void		print_mem(t_block *blk)
 static inline void		search_mem(t_page *page, int *i)
 {
 	t_block	*first;
+	t_page	*head;
 
-	ft_hexdump((long)page);
-	write(1, "\n", 1);
+	/* ft_hexdump((long)page); */
+	/* write(1, "\n", 1); */
+	head = page;
 	while (page)
 	{
+		ft_hexdump((long)page);
+		write(1, "\n", 1);
 		first = page->blk;
 		while (page->blk)
 		{
@@ -76,6 +84,7 @@ static inline void		search_mem(t_page *page, int *i)
 		page = page->nxt;
 		write(1, "\n", 1);
 	}
+	page = head;
 }
 
 void					show_alloc_mem(void)
@@ -90,13 +99,13 @@ void					show_alloc_mem(void)
 	small = g_lst.small;
 	large = g_lst.large;
 	ft_putstr("TINY : ");
-	search_mem(g_lst.tiny, &i);
+	search_mem(tiny, &i);
 	write(1, "\n", 1);
 	ft_putstr("SMALL : ");
-	search_mem(g_lst.small, &i);
+	search_mem(small, &i);
 	write(1, "\n", 1);
 	ft_putstr("LARGE : ");
-	print_mem_large(g_lst.large, &i);
+	print_mem_large(large, &i);
 	write(1, "\n", 1);
 	ft_putstr("Total : ");
 	ft_putnbr(i);

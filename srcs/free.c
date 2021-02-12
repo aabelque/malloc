@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/11 17:56:38 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/12 17:31:19 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,26 +40,24 @@ static int		ft_free_large(t_page **page, void *ptr)
 	return (0);
 }
 
-static int		ft_find_free(t_page *page, void *ptr)
+static int		ft_find_free(t_page **page, void *ptr)
 {
-	t_block		*blk;
 	t_page		*tmp;
 
-	if (!page)
+	if (!*page)
 		return (-1);
-	tmp = page;
-	blk = page->blk;
+	tmp = *page;
 	while (tmp)
 	{
-		while (blk)
+		while (tmp->blk)
 		{
-			if (ptr == blk->p)
+			if (ptr == tmp->blk->p)
 			{
-				blk->free = 1;
-				tmp->rest += blk->len + STRUCT(t_block);
+				tmp->blk->free = 1;
+				tmp->rest += tmp->blk->len + STRUCT(t_block);
 				return (0);
 			}
-			blk = blk->nxt;
+			tmp->blk = tmp->blk->nxt;
 		}
 		tmp = tmp->nxt;
 	}
@@ -102,14 +100,14 @@ void			free(void *ptr)
 
 	if (!ptr)
 		return ;
-	if (!ft_find_free(g_lst.tiny, ptr))
+	if (!ft_find_free(&g_lst.tiny, ptr))
 	{
 		ft_find_fragment(g_lst.tiny);
 		diff = STRUCT(t_page);
 		ft_free_page(&g_lst.tiny, diff);
 		return ;
 	}
-	else if (!ft_find_free(g_lst.small, ptr))
+	else if (!ft_find_free(&g_lst.small, ptr))
 	{
 		ft_find_fragment(g_lst.small);
 		diff = STRUCT(t_page);
