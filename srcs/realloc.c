@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/02 19:15:13 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/13 12:53:48 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/13 12:58:58 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ static void		*ft_find_zone(void *p, size_t size)
 void			*realloc(void *ptr, size_t size)
 {
 	void	*p;
+	size_t	align;
 
 	if ((int)size < 0)
 		return (NULL);
@@ -83,7 +84,8 @@ void			*realloc(void *ptr, size_t size)
 		free(ptr);
 		return (malloc(16));
 	}
-	p = ft_find_zone(ptr, size);
+	align = ft_getalign(size, 16);
+	p = ft_find_zone(ptr, align);
 	return (p);
 }
 
