@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/02 19:15:13 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/11 14:12:42 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/13 12:53:48 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,16 @@
 static void		*ft_find_ptr(t_page **zone, void *ptr, size_t len)
 {
 	void	*new;
+	t_page	*tmp;
 	t_block	*blk;
 
-	new = NULL;
 	if (!(*zone))
 		return (NULL);
-	blk = (*zone)->blk;
-	while (*zone)
+	new = NULL;
+	tmp = *zone;
+	while (tmp)
 	{
+		blk = tmp->blk;
 		while (blk)
 		{
 			if (ptr == blk->p)
@@ -36,7 +38,8 @@ static void		*ft_find_ptr(t_page **zone, void *ptr, size_t len)
 			}
 			blk = blk->nxt;
 		}
-		*zone = (*zone)->nxt;
+		tmp->blk = blk;
+		tmp = tmp->nxt;
 	}
 	return (new);
 }
