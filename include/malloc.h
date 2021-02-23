@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:20:29 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/23 14:08:26 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/23 17:40:10 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,20 +29,20 @@
 
 typedef struct	s_block
 {
+	short			freed;
+	size_t			len;
 	struct s_block	*nxt;
 	struct s_block	*prv;
-	size_t			len;
-	short			freed;
 }				t_block;
 
 typedef struct	s_heap
 {
-	struct s_heap	*nxt;
-	t_block			*blk;
-	size_t			size;
-	size_t			free_size;
 	short			nb_blk;
 	short			freed;
+	size_t			size;
+	size_t			free_size;
+	t_block			*blk;
+	struct s_heap	*nxt;
 }				t_heap;
 
 typedef struct	s_malloc
