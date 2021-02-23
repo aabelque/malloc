@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 17:09:37 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/12 18:11:09 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/23 10:07:40 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ inline void		ft_hexdump(long n)
 		ft_putchar((n % 16) - 10 + 97);
 }
 
-static inline void		print_mem_large(t_page *page, int *i)
+static inline void		print_mem_large(t_heap *page, int *i)
 {
-	t_page	*head;
+	t_heap	*head;
 
 	ft_hexdump((long)page);
 	write(1, "\n", 1);
@@ -33,10 +33,10 @@ static inline void		print_mem_large(t_page *page, int *i)
 	while (page)
 	{
 		write(1, "0X", 2);
-		ft_hexdump((long)page->blk->p);
+		ft_hexdump((long)BLK_SHIFT(page->blk));
 		ft_putstr(" - ");
 		write(1, "0X", 2);
-		ft_hexdump((long)page->blk->p + page->blk->len);
+		ft_hexdump((long)BLK_SHIFT(page->blk) + page->blk->len);
 		ft_putstr(" : ");
 		ft_putnbr(page->blk->len);
 		ft_putstr(" octets\n");
@@ -49,19 +49,19 @@ static inline void		print_mem_large(t_page *page, int *i)
 static inline void		print_mem(t_block *blk)
 {
 	write(1, "0X", 2);
-	ft_hexdump((long)blk->p);
+	ft_hexdump((long)BLK_SHIFT(blk));
 	ft_putstr(" - ");
 	write(1, "0X", 2);
-	ft_hexdump((long)blk->p + blk->len);
+	ft_hexdump((long)BLK_SHIFT(blk) + blk->len);
 	ft_putstr(" : ");
 	ft_putnbr(blk->len);
 	ft_putstr(" octets\n");
 }
 
-static inline void		search_mem(t_page *page, int *i)
+static inline void		search_mem(t_heap *page, int *i)
 {
 	t_block	*first;
-	t_page	*head;
+	t_heap	*head;
 
 	ft_hexdump((long)page);
 	write(1, "\n", 1);
@@ -71,12 +71,13 @@ static inline void		search_mem(t_page *page, int *i)
 		first = page->blk;
 		while (page->blk)
 		{
-			if (!page->blk->free)
+			if (!page->blk->freed)
 			{
 				print_mem(page->blk);
 				*i += page->blk->len;
 			}
 			page->blk = page->blk->nxt;
+			/* *i += 1; */
 		}
 		page->blk = first;
 		page = page->nxt;
@@ -88,11 +89,13 @@ static inline void		search_mem(t_page *page, int *i)
 void					show_alloc_mem(void)
 {
 	int		i;
-	t_page	*tiny;
-	t_page	*small;
-	t_page	*large;
+	int		j;
+	t_heap	*tiny;
+	t_heap	*small;
+	t_heap	*large;
 
 	i = 0;
+	j = 0;
 	tiny = g_lst.tiny;
 	small = g_lst.small;
 	large = g_lst.large;
@@ -105,6 +108,9 @@ void					show_alloc_mem(void)
 	ft_putstr("LARGE : ");
 	print_mem_large(large, &i);
 	write(1, "\n", 1);
+	/* ft_putstr("nb page: "); */
+	/* ft_putnbr(j); */
+	/* write(1, "\n", 1); */
 	ft_putstr("Total : ");
 	ft_putnbr(i);
 	ft_putstr(" octets\n");
