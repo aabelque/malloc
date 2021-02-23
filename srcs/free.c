@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/23 10:11:52 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/23 11:40:18 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static int		ft_find_free(t_heap **page, void *ptr)
 		{
 			if (ptr == BLK_SHIFT(blk))
 			{
-				blk->freed = TRUE;
+				blk->freed = 1;
 				tmp->free_size += blk->len + STRUCT(t_block);
 				tmp->nb_blk--;
 				return (0);

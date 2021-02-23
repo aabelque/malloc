@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:20:29 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/23 10:17:53 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/23 14:08:26 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,27 +19,20 @@
 
 # define PROT (PROT_READ | PROT_WRITE)
 # define FLGS (MAP_ANON | MAP_PRIVATE)
-# define SMALL 1024
 # define TINY 128
-# define STRUCT(x) ft_getalign(sizeof(x), 15)
+# define SMALL 1024
+# define STRUCT(x) ft_getalign(sizeof(x), 16)
 # define TINY_ZONE (TINY * 100)
 # define SMALL_ZONE (SMALL * 100)
-# define HEAP_SHIFT(start) ((void *)start + sizeof(t_heap))
-# define BLK_SHIFT(start) ((void *)start + sizeof(t_block))
-
-typedef enum	s_bool
-{
-	FALSE,
-	TRUE
-}				t_bool;
+# define HEAP_SHIFT(start) ((char *)start + STRUCT(t_heap))
+# define BLK_SHIFT(start) ((char *)start + STRUCT(t_block))
 
 typedef struct	s_block
 {
 	struct s_block	*nxt;
 	struct s_block	*prv;
 	size_t			len;
-	t_bool			freed;
-	/* void			*p; */
+	short			freed;
 }				t_block;
 
 typedef struct	s_heap
@@ -49,7 +42,7 @@ typedef struct	s_heap
 	size_t			size;
 	size_t			free_size;
 	short			nb_blk;
-	t_bool			freed;
+	short			freed;
 }				t_heap;
 
 typedef struct	s_malloc
@@ -66,14 +59,14 @@ void			*calloc(size_t count, size_t size);
 void			free(void *ptr);
 void			*malloc(size_t size);
 size_t			ft_getalign(size_t size, int align);
-t_block			*ft_new_block(size_t size);
+void			*ft_new_block(size_t size);
 void			show_alloc_mem(void);
 void			*ft_create_zone(t_heap **lst, size_t size, size_t len);
 void			*ft_alloc_large(t_heap **page, size_t len, int sz_struct);
-t_block			*ft_init_block(t_block *nw, t_block *blk, size_t len);
+void			*ft_init_block(t_block *nw, t_block *blk, size_t len);
 void			ft_free_page(t_heap **zone);
 void			*realloc(void *ptr, size_t size);
-t_block			*ft_findblock(t_heap **page, size_t sz);
+void			*ft_findblock(t_heap **page, size_t sz);
 void			ft_putchar(char c);
 void			ft_putnbr(int n);
 size_t			ft_strlen(const char *s);

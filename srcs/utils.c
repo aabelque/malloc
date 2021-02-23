@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/23 10:12:50 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/23 14:10:38 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,20 +36,20 @@ void		ft_free_page(t_heap **zone)
 	munmap((t_heap *)tmp, tmp->size);
 }
 
-t_block			*ft_init_block(t_block *nw, t_block *blk, size_t len)
+void			*ft_init_block(t_block *nw, t_block *blk, size_t len)
 {
-	blk->freed = FALSE;
+	blk->freed = 0;
 	/* blk->p = (char *)blk + STRUCT(t_block); */
 	if (((t_block *)((char *)blk + len + 64)) <= blk->nxt)
 	{
 		nw = (t_block *)((char *)blk + len);
-		nw->freed = TRUE;
+		nw->freed = 1;
 		nw->nxt = blk->nxt;
 		nw->prv = blk;
 		blk->nxt = nw;
 		nw->len = (long)nw->nxt - (long)nw;
 	}
-	return (blk);
+	return ((char *)blk);
 }
 
 void		*ft_alloc_large(t_heap **lst, size_t len, int sz_struct)
@@ -63,11 +63,11 @@ void		*ft_alloc_large(t_heap **lst, size_t len, int sz_struct)
 	new->nxt = NULL;
 	new->size = len + sz_struct;
 	new->free_size = 0;
-	new->freed = FALSE;
+	new->freed = 0;
 	new->nb_blk++;
 	/* new->blk = (t_block *)((char *)new + STRUCT(t_heap)); */
-	new->blk = HEAP_SHIFT(new);
-	new->blk->freed = FALSE;
+	new->blk = (t_block *)HEAP_SHIFT(new);
+	new->blk->freed = 0;
 	new->blk->len = len;
 	/* new->blk->p = (void *)((char *)new->blk + STRUCT(t_block)); */
 	new->blk->nxt = NULL;
@@ -77,10 +77,10 @@ void		*ft_alloc_large(t_heap **lst, size_t len, int sz_struct)
 		while (last->nxt)
 			last = last->nxt;
 		last->nxt = new;
-		return (BLK_SHIFT(new->blk));
+		return ((char *)BLK_SHIFT(new->blk));
 	}
 	*lst = new;
-	return (BLK_SHIFT((*lst)->blk));
+	return ((char *)BLK_SHIFT((*lst)->blk));
 }
 
 void		*ft_create_zone(t_heap **lst, size_t size, size_t len)
@@ -92,13 +92,13 @@ void		*ft_create_zone(t_heap **lst, size_t size, size_t len)
 	if (!(new = (t_heap *)mmap(0, size, PROT, FLGS, -1, 0)))
 		return (NULL);
 	new->nxt = NULL;
-	new->free_size = size - (sizeof(t_heap) + sizeof(t_block) + len);
+	new->free_size = size - (STRUCT(t_heap) + STRUCT(t_block) + len);
 	new->size = size;
-	new->freed = TRUE;
+	new->freed = 1;
 	new->nb_blk++;
-	new->blk = HEAP_SHIFT(new);
+	new->blk = (t_block *)HEAP_SHIFT(new);
 	new->blk->len = len;
-	new->blk->freed = FALSE;
+	new->blk->freed = 0;
 	/* new->blk->p = (void *)((char *)new->blk + STRUCT(t_block)); */
 	new->blk->nxt = NULL;
 	if (last)
@@ -106,9 +106,9 @@ void		*ft_create_zone(t_heap **lst, size_t size, size_t len)
 		while (last->nxt)
 			last = last->nxt;
 		last->nxt = new;
-		return (new);
+		return ((char *)new);
 	}
-	return (new);
+	return ((char *)new);
 }
 
 size_t		ft_getalign(size_t size, int align)

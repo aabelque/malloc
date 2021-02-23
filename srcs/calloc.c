@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/07 23:23:50 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/23 10:05:57 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/23 13:48:34 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	*calloc(size_t count, size_t size)
 	void *p;
 	size_t len;
 
-	len = ft_getalign(count * size, 15);
+	len = ft_getalign(count * size, 16);
 	if (!(p = malloc(len)))
 		return (NULL);
 	ft_bzero(p, len);
