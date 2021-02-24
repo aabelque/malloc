@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:20:29 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/24 16:07:06 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 16:15:43 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ typedef struct	s_block
 {
 	short			free;
 	size_t			len;
-	void			*p;
 	struct s_block	*nxt;
 	struct s_block	*prv;
 }				t_block;
