@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 17:09:37 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/12 18:11:09 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 12:11:52 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,27 +23,27 @@ inline void		ft_hexdump(long n)
 		ft_putchar((n % 16) - 10 + 97);
 }
 
-static inline void		print_mem_large(t_page *page, int *i)
+static inline void		print_mem_large(t_heap *heap, int *i)
 {
-	t_page	*head;
+	t_heap	*head;
 
-	ft_hexdump((long)page);
+	ft_hexdump((long)heap);
 	write(1, "\n", 1);
-	head = page;
-	while (page)
+	head = heap;
+	while (heap)
 	{
 		write(1, "0X", 2);
-		ft_hexdump((long)page->blk->p);
+		ft_hexdump((long)heap->blk->p);
 		ft_putstr(" - ");
 		write(1, "0X", 2);
-		ft_hexdump((long)page->blk->p + page->blk->len);
+		ft_hexdump((long)heap->blk->p + heap->blk->len);
 		ft_putstr(" : ");
-		ft_putnbr(page->blk->len);
+		ft_putnbr(heap->blk->len);
 		ft_putstr(" octets\n");
-		*i += page->blk->len;
-		page = page->nxt;
+		*i += heap->blk->len;
+		heap = heap->nxt;
 	}
-	page = head;
+	heap = head;
 }
 
 static inline void		print_mem(t_block *blk)
@@ -58,39 +58,39 @@ static inline void		print_mem(t_block *blk)
 	ft_putstr(" octets\n");
 }
 
-static inline void		search_mem(t_page *page, int *i)
+static inline void		search_mem(t_heap *heap, int *i)
 {
 	t_block	*first;
-	t_page	*head;
+	t_heap	*head;
 
-	ft_hexdump((long)page);
+	ft_hexdump((long)heap);
 	write(1, "\n", 1);
-	head = page;
-	while (page)
+	head = heap;
+	while (heap)
 	{
-		first = page->blk;
-		while (page->blk)
+		first = heap->blk;
+		while (heap->blk)
 		{
-			if (!page->blk->free)
+			if (!heap->blk->free)
 			{
-				print_mem(page->blk);
-				*i += page->blk->len;
+				print_mem(heap->blk);
+				*i += heap->blk->len;
 			}
-			page->blk = page->blk->nxt;
+			heap->blk = heap->blk->nxt;
 		}
-		page->blk = first;
-		page = page->nxt;
+		heap->blk = first;
+		heap = heap->nxt;
 		write(1, "\n", 1);
 	}
-	page = head;
+	heap = head;
 }
 
 void					show_alloc_mem(void)
 {
 	int		i;
-	t_page	*tiny;
-	t_page	*small;
-	t_page	*large;
+	t_heap	*tiny;
+	t_heap	*small;
+	t_heap	*large;
 
 	i = 0;
 	tiny = g_lst.tiny;

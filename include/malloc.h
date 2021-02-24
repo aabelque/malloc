@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:20:29 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/12 15:05:56 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 12:13:11 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,20 +35,20 @@ typedef struct	s_block
 	struct s_block	*prv;
 }				t_block;
 
-typedef struct	s_page
+typedef struct	s_heap
 {
 	short			free;
 	size_t			rest;
 	size_t			size;
 	t_block			*blk;
-	struct s_page	*nxt;
-}				t_page;
+	struct s_heap	*nxt;
+}				t_heap;
 
 typedef struct	s_malloc
 {
-	t_page			*tiny;
-	t_page			*small;
-	t_page			*large;
+	t_heap			*tiny;
+	t_heap			*small;
+	t_heap			*large;
 }				t_malloc;
 
 t_malloc			g_lst;
@@ -60,12 +60,12 @@ void			*malloc(size_t size);
 size_t			ft_getalign(size_t size, int align);
 t_block			*ft_new_block(size_t size);
 void			show_alloc_mem(void);
-void			*ft_create_zone(t_page **lst, size_t size, size_t len);
-void			*ft_alloc_large(t_page **page, size_t len, int sz_struct);
+void			*ft_create_zone(t_heap **lst, size_t size, size_t len);
+void			*ft_alloc_large(t_heap **heap, size_t len, int sz_struct);
 t_block			*ft_init_block(t_block *nw, t_block *blk, size_t len);
-void			ft_free_page(t_page **zone, int diff);
+void			ft_free_heap(t_heap **zone, int diff);
 void			*realloc(void *ptr, size_t size);
-t_block			*ft_findblock(t_page **page, size_t sz);
+t_block			*ft_findblock(t_heap **heap, size_t sz);
 void			ft_putchar(char c);
 void			ft_putnbr(int n);
 size_t			ft_strlen(const char *s);

@@ -6,16 +6,16 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/02 19:15:13 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/13 12:58:58 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 12:11:05 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-static void		*ft_find_ptr(t_page **zone, void *ptr, size_t len)
+static void		*ft_find_ptr(t_heap **zone, void *ptr, size_t len)
 {
 	void	*new;
-	t_page	*tmp;
+	t_heap	*tmp;
 	t_block	*blk;
 
 	if (!(*zone))

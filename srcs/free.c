@@ -6,23 +6,23 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/12 18:33:05 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 12:12:50 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-static int		ft_free_large(t_page **page, void *ptr)
+static int		ft_free_large(t_heap **heap, void *ptr)
 {
-	t_page		*tmp;
-	t_page		*prev;
+	t_heap		*tmp;
+	t_heap		*prev;
 
-	tmp = *page;
+	tmp = *heap;
 	prev = NULL;
 	if (tmp && (tmp->blk->p == ptr))
 	{
-		*page = tmp->nxt;
-		munmap((t_page *)tmp, tmp->size);
+		*heap = tmp->nxt;
+		munmap((t_heap *)tmp, tmp->size);
 		{
 			tmp = NULL;
 			return (0);
@@ -36,18 +36,18 @@ static int		ft_free_large(t_page **page, void *ptr)
 	if (!tmp)
 		return (-1);
 	prev->nxt = tmp->nxt;
-	munmap((t_page *)tmp, tmp->size);
+	munmap((t_heap *)tmp, tmp->size);
 	return (0);
 }
 
-static int		ft_find_free(t_page **page, void *ptr)
+static int		ft_find_free(t_heap **heap, void *ptr)
 {
-	t_page		*tmp;
+	t_heap		*tmp;
 	t_block		*blk;
 
-	if (!*page)
+	if (!*heap)
 		return (-1);
-	tmp = *page;
+	tmp = *heap;
 	while (tmp)
 	{
 		blk = tmp->blk;
@@ -77,14 +77,14 @@ static void		ft_defrag(t_block **curr, t_block **prev)
 	}
 }
 
-static void		ft_find_fragment(t_page *page)
+static void		ft_find_fragment(t_heap *heap)
 {
 	t_block		*curr;
 	t_block		*prev;
 
-	if (!page)
+	if (!heap)
 		return ;
-	curr = page->blk;
+	curr = heap->blk;
 	prev = curr;
 	while (curr)
 	{
@@ -105,15 +105,15 @@ void			free(void *ptr)
 	if (!ft_find_free(&g_lst.tiny, ptr))
 	{
 		ft_find_fragment(g_lst.tiny);
-		diff = STRUCT(t_page);
-		ft_free_page(&g_lst.tiny, diff);
+		diff = STRUCT(t_heap);
+		ft_free_heap(&g_lst.tiny, diff);
 		return ;
 	}
 	else if (!ft_find_free(&g_lst.small, ptr))
 	{
 		ft_find_fragment(g_lst.small);
-		diff = STRUCT(t_page);
-		ft_free_page(&g_lst.small, diff);
+		diff = STRUCT(t_heap);
+		ft_free_heap(&g_lst.small, diff);
 		return ;
 	}
 	else

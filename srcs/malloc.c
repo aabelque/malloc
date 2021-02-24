@@ -6,35 +6,35 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/12 16:39:51 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 12:21:08 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
 static t_block			*ft_newblock(t_block *new, t_block *blk, size_t sz,
-		t_page **page)
+		t_heap **heap)
 {
-	new = (void *)blk->p + blk->len;
+	new = (t_block *)((char *)blk->p + blk->len);
 	new->len = sz;
 	new->free = 0;
 	new->p = (char *)new + STRUCT(t_block);
 	new->nxt = NULL;
 	new->prv = blk;
 	blk->nxt = new;
-	(*page)->rest -= (sz + STRUCT(t_block));
-	if (!(*page)->rest)
-		(*page)->free = 0;
+	(*heap)->rest -= (sz + STRUCT(t_block));
+	if (!(*heap)->rest)
+		(*heap)->free = 0;
 	return (new);
 }
 
-t_block				*ft_findblock(t_page **page, size_t sz)
+t_block				*ft_findblock(t_heap **heap, size_t sz)
 {
 	t_block			*blk;
 	t_block			*last;
 	t_block			*new;
 
-	blk = (*page)->blk;
+	blk = (*heap)->blk;
 	last = blk;
 	new = NULL;
 	while (blk)
@@ -43,38 +43,38 @@ t_block				*ft_findblock(t_page **page, size_t sz)
 		{
 			blk = ft_init_block(new, blk, sz + STRUCT(t_block));
 			blk->len = sz;
-			(*page)->rest -= sz + STRUCT(t_block);
+			(*heap)->rest -= sz + STRUCT(t_block);
 			return (blk);
 		}
 		last = blk;
 		blk = blk->nxt;
 	}
-	return(ft_newblock(new, last, sz, page));
+	return(ft_newblock(new, last, sz, heap));
 }
 
-static void			*ft_getblock(t_page **zone, size_t len, size_t len_zone)
+static void			*ft_getblock(t_heap **zone, size_t len, size_t len_zone)
 {
-	t_page			*page;
+	t_heap			*heap;
 	t_block			*new;
 
 	if (!*zone)
 	{
-		*zone = (t_page *)ft_create_zone(zone, len_zone, len);
+		*zone = (t_heap *)ft_create_zone(zone, len_zone, len);
 		return ((*zone)->blk->p);
 	}
-	page = *zone;
-	while (page)
+	heap = *zone;
+	while (heap)
 	{
-		if (page->free)
+		if (heap->free)
 		{
-			if ((len + STRUCT(t_block)) <= page->rest)
-				if ((new = ft_findblock(&page, len)))
+			if ((len + STRUCT(t_block)) <= heap->rest)
+				if ((new = ft_findblock(&heap, len)))
 					return (new->p);
 		}
-		page = page->nxt;
+		heap = heap->nxt;
 	}
-	page = (t_page *)ft_create_zone(zone, len_zone, len);
-	return (page->blk->p);
+	heap = (t_heap *)ft_create_zone(zone, len_zone, len);
+	return (heap->blk->p);
 }
 
 static void			*ft_alloc(size_t size)
@@ -91,7 +91,7 @@ static void			*ft_alloc(size_t size)
 	else if (align <= SMALL)
 		return (ft_getblock(&g_lst.small, align, SMALL_ZONE));
 	else
-		return (ft_alloc_large(&g_lst.large, align, STRUCT(t_page) + STRUCT(t_block)));
+		return (ft_alloc_large(&g_lst.large, align, STRUCT(t_heap) + STRUCT(t_block)));
 	return (NULL);
 }
 
