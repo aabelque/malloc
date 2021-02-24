@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/02 19:15:13 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/24 15:56:38 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 16:04:42 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,26 +46,33 @@ static void		*ft_find_ptr(t_heap **zone, void *ptr, size_t len)
 
 static void		*ft_find_zone(void *p, size_t size)
 {
-	while (g_lst.tiny)
+	t_heap		*tiny;
+	t_heap		*small;
+	t_heap		*large;
+
+	tiny = g_lst.tiny;
+	small = g_lst.small;
+	large = g_lst.large;
+	while (tiny)
 	{
-		if ((char *)p > (char *)g_lst.tiny && (char *)p < (char *)g_lst.tiny
-				+ g_lst.tiny->size)
-			return (ft_find_ptr(&g_lst.tiny, p, size));
-		g_lst.tiny = g_lst.tiny->nxt;
+		if ((char *)p > (char *)tiny && (char *)p < (char *)tiny
+				+ tiny->size)
+			return (ft_find_ptr(&tiny, p, size));
+		tiny = tiny->nxt;
 	}
-	while (g_lst.small)
+	while (small)
 	{
-		if ((char *)p > (char *)g_lst.small && (char *)p < (char *)g_lst.small
-				+ g_lst.small->size)
-			return (ft_find_ptr(&g_lst.small, p, size));
-		g_lst.small = g_lst.small->nxt;
+		if ((char *)p > (char *)small && (char *)p < (char *)small
+				+ small->size)
+			return (ft_find_ptr(&small, p, size));
+		small = small->nxt;
 	}
-	while (g_lst.large)
+	while (large)
 	{
-		if ((char *)p > (char *)g_lst.large && (char *)p < (char *)g_lst.large
-				+ g_lst.large->size)
-			return (ft_find_ptr(&g_lst.large, p, size));
-		g_lst.large = g_lst.large->nxt;
+		if ((char *)p > (char *)large && (char *)p < (char *)large
+				+ large->size)
+			return (ft_find_ptr(&large, p, size));
+		large = large->nxt;
 	}
 	return (NULL);
 }
