@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/07 23:23:50 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/11 17:54:21 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 16:12:23 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,12 @@ void	ft_bzero(void *p, size_t n)
 
 void	*calloc(size_t count, size_t size)
 {
-	void *p;
+	void	*p;
+	size_t	len;
 
-	if (!(p = malloc(count * size)))
+	len = ft_getalign(count * size, 16);
+	if (!(p = malloc(len)))
 		return (NULL);
-	ft_bzero(p, count * size);
+	ft_bzero(p, len);
 	return (p);
 }
