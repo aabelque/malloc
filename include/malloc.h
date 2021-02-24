@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:20:29 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/24 15:34:33 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 16:07:06 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct	s_block
 typedef struct	s_heap
 {
 	short			free;
-	size_t			rest;
+	size_t			free_size;
 	size_t			size;
 	t_block			*blk;
 	struct s_heap	*nxt;

@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/24 15:54:37 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 16:07:17 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ void		ft_free_heap(t_heap **zone, int diff)
 
 	tmp = *zone;
 	prev = NULL;
-	if (tmp && (tmp->size == (tmp->rest + diff)))
+	if (tmp && (tmp->size == (tmp->free_size + diff)))
 	{
 		*zone = tmp->nxt;
 		munmap((t_heap *)tmp, tmp->size);
 			return ;
 	}
-	while (tmp && (tmp->size != (tmp->rest + diff)))
+	while (tmp && (tmp->size != (tmp->free_size + diff)))
 	{
 		prev = tmp;
 		tmp = tmp->nxt;
@@ -62,7 +62,7 @@ void		*ft_alloc_large(t_heap **lst, size_t len, int sz_struct)
 		return (NULL);
 	new->nxt = NULL;
 	new->size = len + sz_struct;
-	new->rest = 0;
+	new->free_size = 0;
 	new->free = 0;
 	new->blk = HEAP_SHIFT(new);
 	new->blk->free = 0;
@@ -90,7 +90,7 @@ void		*ft_create_zone(t_heap **lst, size_t size, size_t len)
 	if (!(new = (t_heap *)mmap(0, size, PROT, FLGS, -1, 0)))
 		return (NULL);
 	new->nxt = NULL;
-	new->rest = size - (STRUCT(t_heap) + STRUCT(t_block) + len);
+	new->free_size = size - (STRUCT(t_heap) + STRUCT(t_block) + len);
 	new->size = size;
 	new->free = 1;
 	new->blk = HEAP_SHIFT(new);

@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/24 15:54:04 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 16:07:27 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ static t_block			*ft_newblock(t_block *new, t_block *blk, size_t sz,
 	new->nxt = NULL;
 	new->prv = blk;
 	blk->nxt = new;
-	(*heap)->rest -= (sz + STRUCT(t_block));
-	if (!(*heap)->rest)
+	(*heap)->free_size -= (sz + STRUCT(t_block));
+	if (!(*heap)->free_size)
 		(*heap)->free = 0;
 	return (new);
 }
@@ -43,7 +43,7 @@ t_block				*ft_findblock(t_heap **heap, size_t sz)
 		{
 			blk = ft_init_block(new, blk, sz + STRUCT(t_block));
 			blk->len = sz;
-			(*heap)->rest -= sz + STRUCT(t_block);
+			(*heap)->free_size -= sz + STRUCT(t_block);
 			return (blk);
 		}
 		last = blk;
@@ -67,7 +67,7 @@ static void			*ft_getblock(t_heap **zone, size_t len, size_t len_zone)
 	{
 		if (heap->free)
 		{
-			if ((len + STRUCT(t_block)) <= heap->rest)
+			if ((len + STRUCT(t_block)) <= heap->free_size)
 				if ((new = ft_findblock(&heap, len)))
 					return (BLK_SHIFT(new));
 		}
