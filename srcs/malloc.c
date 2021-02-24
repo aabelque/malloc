@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/24 15:36:49 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 15:54:04 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 static t_block			*ft_newblock(t_block *new, t_block *blk, size_t sz,
 		t_heap **heap)
 {
-	new = (t_block *)((char *)blk->p + blk->len);
+	new = BLK_SHIFT(blk) + blk->len;
 	new->len = sz;
 	new->free = 0;
-	new->p = BLK_SHIFT(new);
+	/* new->p = BLK_SHIFT(new); */
 	new->nxt = NULL;
 	new->prv = blk;
 	blk->nxt = new;

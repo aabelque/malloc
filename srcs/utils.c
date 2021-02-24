@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/24 15:38:44 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 15:54:37 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void		ft_free_heap(t_heap **zone, int diff)
 t_block			*ft_init_block(t_block *nw, t_block *blk, size_t len)
 {
 	blk->free = 0;
-	blk->p = (char *)blk + STRUCT(t_block);
+	/* blk->p = (char *)blk + STRUCT(t_block); */
 	if ((blk + len + 64) <= blk->nxt)
 	{
 		nw = blk + len;
@@ -67,7 +67,7 @@ void		*ft_alloc_large(t_heap **lst, size_t len, int sz_struct)
 	new->blk = HEAP_SHIFT(new);
 	new->blk->free = 0;
 	new->blk->len = len;
-	new->blk->p = BLK_SHIFT(new->blk);
+	/* new->blk->p = BLK_SHIFT(new->blk); */
 	new->blk->nxt = NULL;
 	new->blk->prv = NULL;
 	if (last)
@@ -96,7 +96,7 @@ void		*ft_create_zone(t_heap **lst, size_t size, size_t len)
 	new->blk = HEAP_SHIFT(new);
 	new->blk->len = len;
 	new->blk->free = 0;
-	new->blk->p = BLK_SHIFT(new->blk);
+	/* new->blk->p = BLK_SHIFT(new->blk); */
 	new->blk->nxt = NULL;
 	if (last)
 	{

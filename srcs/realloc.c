@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/02 19:15:13 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/24 12:11:05 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 15:56:38 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static void		*ft_find_ptr(t_heap **zone, void *ptr, size_t len)
 		blk = tmp->blk;
 		while (blk)
 		{
-			if (ptr == blk->p)
+			if (ptr == BLK_SHIFT(blk))
 			{
 				if (len <= blk->len)
 					return (ptr);

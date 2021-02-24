@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 17:09:37 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/24 12:11:52 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 15:59:20 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ static inline void		print_mem_large(t_heap *heap, int *i)
 	while (heap)
 	{
 		write(1, "0X", 2);
-		ft_hexdump((long)heap->blk->p);
+		ft_hexdump((long)BLK_SHIFT(heap->blk));
 		ft_putstr(" - ");
 		write(1, "0X", 2);
-		ft_hexdump((long)heap->blk->p + heap->blk->len);
+		ft_hexdump((long)BLK_SHIFT(heap->blk) + heap->blk->len);
 		ft_putstr(" : ");
 		ft_putnbr(heap->blk->len);
 		ft_putstr(" octets\n");
@@ -49,10 +49,10 @@ static inline void		print_mem_large(t_heap *heap, int *i)
 static inline void		print_mem(t_block *blk)
 {
 	write(1, "0X", 2);
-	ft_hexdump((long)blk->p);
+	ft_hexdump((long)BLK_SHIFT(blk));
 	ft_putstr(" - ");
 	write(1, "0X", 2);
-	ft_hexdump((long)blk->p + blk->len);
+	ft_hexdump((long)BLK_SHIFT(blk) + blk->len);
 	ft_putstr(" : ");
 	ft_putnbr(blk->len);
 	ft_putstr(" octets\n");
