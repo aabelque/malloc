@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:20:29 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/24 12:13:11 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 15:34:33 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,13 @@
 
 # define PROT (PROT_READ | PROT_WRITE)
 # define FLGS (MAP_ANON | MAP_PRIVATE)
-# define PS getpagesize()
-# define SMALL PS
-# define TINY PS / 4
+# define SMALL 4096
+# define TINY 512
 # define STRUCT(x) ft_getalign(sizeof(x), 16)
 # define TINY_ZONE (TINY * 100)
 # define SMALL_ZONE (SMALL * 100)
+# define HEAP_SHIFT(start) ((void *)start + STRUCT(t_heap))
+# define BLK_SHIFT(start) ((void *)start + STRUCT(t_block))
 
 typedef struct	s_block
 {

@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/24 12:12:50 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 15:40:51 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,14 +104,14 @@ void			free(void *ptr)
 		return ;
 	if (!ft_find_free(&g_lst.tiny, ptr))
 	{
-		ft_find_fragment(g_lst.tiny);
+		/* ft_find_fragment(g_lst.tiny); */
 		diff = STRUCT(t_heap);
 		ft_free_heap(&g_lst.tiny, diff);
 		return ;
 	}
 	else if (!ft_find_free(&g_lst.small, ptr))
 	{
-		ft_find_fragment(g_lst.small);
+		/* ft_find_fragment(g_lst.small); */
 		diff = STRUCT(t_heap);
 		ft_free_heap(&g_lst.small, diff);
 		return ;

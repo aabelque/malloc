@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/24 12:21:08 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 15:36:49 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static t_block			*ft_newblock(t_block *new, t_block *blk, size_t sz,
 	new = (t_block *)((char *)blk->p + blk->len);
 	new->len = sz;
 	new->free = 0;
-	new->p = (char *)new + STRUCT(t_block);
+	new->p = BLK_SHIFT(new);
 	new->nxt = NULL;
 	new->prv = blk;
 	blk->nxt = new;
@@ -60,7 +60,7 @@ static void			*ft_getblock(t_heap **zone, size_t len, size_t len_zone)
 	if (!*zone)
 	{
 		*zone = (t_heap *)ft_create_zone(zone, len_zone, len);
-		return ((*zone)->blk->p);
+		return (BLK_SHIFT((*zone)->blk));
 	}
 	heap = *zone;
 	while (heap)
@@ -69,12 +69,12 @@ static void			*ft_getblock(t_heap **zone, size_t len, size_t len_zone)
 		{
 			if ((len + STRUCT(t_block)) <= heap->rest)
 				if ((new = ft_findblock(&heap, len)))
-					return (new->p);
+					return (BLK_SHIFT(new));
 		}
 		heap = heap->nxt;
 	}
 	heap = (t_heap *)ft_create_zone(zone, len_zone, len);
-	return (heap->blk->p);
+	return (BLK_SHIFT(heap->blk));
 }
 
 static void			*ft_alloc(size_t size)

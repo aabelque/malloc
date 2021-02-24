@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/24 12:13:46 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/24 15:38:44 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,10 @@ void		*ft_alloc_large(t_heap **lst, size_t len, int sz_struct)
 	new->size = len + sz_struct;
 	new->rest = 0;
 	new->free = 0;
-	new->blk = (t_block *)((char *)new + STRUCT(t_heap));
+	new->blk = HEAP_SHIFT(new);
 	new->blk->free = 0;
 	new->blk->len = len;
-	new->blk->p = (char *)new->blk + STRUCT(t_block);
+	new->blk->p = BLK_SHIFT(new->blk);
 	new->blk->nxt = NULL;
 	new->blk->prv = NULL;
 	if (last)
@@ -75,10 +75,10 @@ void		*ft_alloc_large(t_heap **lst, size_t len, int sz_struct)
 		while (last->nxt)
 			last = last->nxt;
 		last->nxt = new;
-		return (new->blk->p);
+		return (BLK_SHIFT(new->blk));
 	}
 	*lst = new;
-	return ((*lst)->blk->p);
+	return (BLK_SHIFT((*lst)->blk));
 }
 
 void		*ft_create_zone(t_heap **lst, size_t size, size_t len)
@@ -93,10 +93,10 @@ void		*ft_create_zone(t_heap **lst, size_t size, size_t len)
 	new->rest = size - (STRUCT(t_heap) + STRUCT(t_block) + len);
 	new->size = size;
 	new->free = 1;
-	new->blk = (t_block *)((char *)new + STRUCT(t_heap));
+	new->blk = HEAP_SHIFT(new);
 	new->blk->len = len;
 	new->blk->free = 0;
-	new->blk->p = (char *)new->blk + STRUCT(t_block);
+	new->blk->p = BLK_SHIFT(new->blk);
 	new->blk->nxt = NULL;
 	if (last)
 	{
