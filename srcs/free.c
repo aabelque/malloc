@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/24 16:07:35 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/25 11:32:35 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ static int		ft_free_large(t_heap **heap, void *ptr)
 
 	tmp = *heap;
 	prev = NULL;
+	if (tmp && !tmp->nxt)
+		return (0);
 	if (tmp && (BLK_SHIFT(tmp->blk) == ptr))
 	{
 		*heap = tmp->nxt;

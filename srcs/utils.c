@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/24 16:14:40 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/25 11:32:35 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ void		ft_free_heap(t_heap **zone, int diff)
 
 	tmp = *zone;
 	prev = NULL;
+	if (tmp && !tmp->nxt)
+		return ;
 	if (tmp && (tmp->size == (tmp->free_size + diff)))
 	{
 		*zone = tmp->nxt;
