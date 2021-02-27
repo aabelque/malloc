@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/27 16:18:56 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/27 19:07:10 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,9 @@ static int		free_large_heap(t_heap **heap, void *ptr)
 	{
 		*heap = tmp->nxt;
 		munmap((t_heap *)tmp, tmp->size + HEADER);
-		{
-			tmp = NULL;
-			return (0);
-		}
+		return (0);
 	}
-	while (tmp && (HEAP_SHIFT(tmp) != ptr))
+	while (tmp && tmp->nxt && (HEAP_SHIFT(tmp) != ptr))
 	{
 		prev = tmp;
 		tmp = tmp->nxt;
@@ -86,7 +83,7 @@ static int		free_block(t_heap **heap, void *ptr)
 	return (-1);
 }
 
-void			free(void *ptr)
+void			free_lock(void *ptr)
 {
 	t_heap		**heap;
 	t_heap		*current;
@@ -102,4 +99,11 @@ void			free(void *ptr)
 	}
 	else
 		free_large_heap(&g_lst.large, ptr);
+}
+
+void			free(void *ptr)
+{
+	mutex_init();
+	free_lock(ptr);
+	pthread_mutex_unlock(&g_thread);
 }

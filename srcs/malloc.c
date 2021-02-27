@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/27 16:50:32 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/27 19:03:49 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ static void			*getblock(t_heap **heap, size_t size, size_t size_heap)
 	return (HEAP_SHIFT(new));
 }
 
-static void			*alloc(size_t size)
+void				*alloc(size_t size)
 {
 	size_t			align;
 	struct rlimit	rlp;
@@ -101,11 +101,24 @@ static void			*alloc(size_t size)
 	return (NULL);
 }
 
+void				mutex_init(void)
+{
+	static int		init = 0;
+
+	if (!init)
+	{
+		pthread_mutex_init(&g_thread, NULL);
+		init++;
+	}
+	pthread_mutex_lock(&g_thread);
+}
+
 void				*malloc(size_t size)
 {
 	static int		init = 0;
 	void			*p;
 
+	mutex_init();
 	p = NULL;
 	if ((int)size < 0)
 		return (NULL);
@@ -119,5 +132,6 @@ void				*malloc(size_t size)
 		init++;
 	}
 	p = alloc(size);
+	pthread_mutex_unlock(&g_thread);
 	return (p);
 }

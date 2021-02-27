@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/27 15:00:53 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/27 18:28:54 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void		*increase_heap(t_heap *last, size_t size_heap, size_t size)
 	new->free = 0;
 	new->size = size;
 	new->nb_heap = !last ? 0 : last->nb_heap + 1;
+	new->prv = last;
 	new->nxt = (t_heap *)((char *)new + HEADER + size);
 	new->nxt->free = 1;
 	new->nxt->size = size_heap - (2 * HEADER + size);

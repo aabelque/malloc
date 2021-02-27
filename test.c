@@ -1,26 +1,17 @@
 #include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include "include/malloc.h"
-
-#define M (1024 * 1024)
-
-void print(char *s)
-{
-	write(1, s, strlen(s));
-}
 
 int main()
 {
-	char *addr1;
-	char *addr3;
+	int i;
+	char *addr;
 
-	addr1 = (char*)malloc(16*M);
-	strcpy(addr1, "Bonjours\n");
-	print(addr1);
-	addr3 = (char*)realloc(addr1, 128*M);
-	addr3[127*M] = 42;
-	print(addr3);
-	show_alloc_mem();
+	i = 0;
+	while (i < 10)
+	{
+		addr = (char*)malloc(1024);
+		addr[0] = 42;
+		free(addr);
+		i++;
+	}
 	return (0);
 }

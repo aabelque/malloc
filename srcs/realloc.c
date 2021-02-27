@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/02 19:15:13 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/27 16:49:47 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/27 19:07:24 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ static void		*ft_find_ptr(t_heap **zone, void *ptr, size_t len)
 		{
 			if (len <= tmp->size)
 				return (ptr);
-			new = malloc(len);
+			new = alloc(len);
 			ft_memcpy(new, ptr, tmp->size);
-			free(ptr);
+			free_lock(ptr);
 			return (new);
 		}
 		tmp = tmp->nxt;
@@ -80,7 +80,9 @@ void			*realloc(void *ptr, size_t size)
 		return (malloc(16));
 	}
 	align = ft_getalign(size, 16);
+	mutex_init();
 	p = ft_find_zone(ptr, align);
+	pthread_mutex_unlock(&g_thread);
 	return (p);
 }
 
