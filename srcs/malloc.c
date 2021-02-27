@@ -6,7 +6,7 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/27 16:00:24 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/27 16:50:32 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,6 @@ void		*increase_large_heap(t_heap **lst, size_t len, int sz_struct) {
 	return (HEAP_SHIFT((*lst)));
 }
 
-/* static t_block			*ft_newblock(t_block *new, t_block *blk, size_t sz, */
-/* 		t_heap **heap) */
-/* { */
-/* 	new = BLK_SHIFT(blk) + blk->len; */
-/* 	new->len = sz; */
-/* 	new->free = 0; */
-/* 	new->nxt = NULL; */
-/* 	new->prv = blk; */
-/* 	blk->nxt = new; */
-/* 	(*heap)->free_size -= (sz + STRUCT(t_block)); */
-/* 	if (!(*heap)->free_size) */
-/* 		(*heap)->free = 0; */
-/* 	return (new); */
-/* } */
-
 void				create_block(t_heap *blk, size_t size)
 {
 	t_heap			*new;
@@ -57,7 +42,6 @@ void				create_block(t_heap *blk, size_t size)
 		return ;
 	new = (void *)((char *)blk + HEADER + size);
 	new->free = 1;
-	/* new->free_size = blk->free_size - (HEADER + size); */
 	new->size = blk->size - (HEADER + size);
 	blk->size = size;
 	new->nb_heap = blk->nb_heap;
@@ -66,17 +50,6 @@ void				create_block(t_heap *blk, size_t size)
 	if (blk->nxt)
 		blk->nxt->prv = new;
 	blk->nxt = new;
-	/* if (blk->free && (sz + STRUCT(t_block)) <= blk->len) */
-	/* 	{ */
-	/* 		blk = ft_init_block(new, blk, sz + STRUCT(t_block)); */
-	/* 		blk->len = sz; */
-	/* 		(*heap)->free_size -= sz + STRUCT(t_block); */
-	/* 		return (blk); */
-	/* 	} */
-	/* 	last = blk; */
-	/* 	blk = blk->nxt; */
-	/* } */
-	/* return(ft_newblock(new, last, sz, heap)); */
 }
 
 static void			*getblock(t_heap **heap, size_t size, size_t size_heap)

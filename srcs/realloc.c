@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/02 19:15:13 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/27 16:14:34 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/02/27 16:49:47 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void		*ft_find_ptr(t_heap **zone, void *ptr, size_t len)
 			if (len <= tmp->size)
 				return (ptr);
 			new = malloc(len);
-			ft_memcpy(new, ptr, ft_getalign(len, 16));
+			ft_memcpy(new, ptr, tmp->size);
 			free(ptr);
 			return (new);
 		}
