@@ -6,7 +6,7 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/02 19:15:13 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/23 11:40:39 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/03/01 19:58:53 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static void		*ft_find_ptr(t_heap **zone, void *ptr, size_t len)
 {
 	void	*new;
 	t_heap	*tmp;
-	t_block	*blk;
 
 	if (!(*zone))
 		return (NULL);
@@ -24,23 +23,15 @@ static void		*ft_find_ptr(t_heap **zone, void *ptr, size_t len)
 	tmp = *zone;
 	while (tmp)
 	{
-		/* ft_hexdump((long)tmp); */
-		/* write(1, "\n", 1); */
-		blk = tmp->blk;
-		while (blk)
+		if (ptr == HEAP_SHIFT(tmp))
 		{
-			if (ptr == BLK_SHIFT(blk))
-			{
-				if (len <= blk->len)
-					return (ptr);
-				new = malloc(len);
-				ft_memcpy(new, ptr, len);
-				free(ptr);
-				return (new);
-			}
-			blk = blk->nxt;
+			if (len <= tmp->size)
+				return (ptr);
+			new = alloc(len);
+			ft_memcpy(new, ptr, tmp->size);
+			free_lock(ptr);
+			return (new);
 		}
-		tmp->blk = blk;
 		tmp = tmp->nxt;
 	}
 	return (new);
@@ -48,33 +39,28 @@ static void		*ft_find_ptr(t_heap **zone, void *ptr, size_t len)
 
 static void		*ft_find_zone(void *p, size_t size)
 {
-	t_heap	*tiny;
-	t_heap	*small;
-	t_heap	*large;
+	t_heap		*heap;
 
-	tiny = g_lst.tiny;
-	small = g_lst.small;
-	large = g_lst.large;
-	while (tiny)
+	heap = g_lst.tiny;
+	while (heap)
 	{
-		if ((char *)p > (char *)tiny && (char *)p < (char *)tiny
-				+ tiny->size)
-			return (ft_find_ptr(&tiny, p, size));
-		tiny = tiny->nxt;
+		if (p == HEAP_SHIFT(heap))
+			return (ft_find_ptr(&g_lst.tiny, p, size));
+		heap = heap->nxt;
 	}
-	while (small)
+	heap = g_lst.small;
+	while (heap)
 	{
-		if ((char *)p > (char *)small && (char *)p < (char *)small
-				+ small->size)
-			return (ft_find_ptr(&small, p, size));
-		small = small->nxt;
+		if (p == HEAP_SHIFT(heap))
+			return (ft_find_ptr(&g_lst.small, p, size));
+		heap = heap->nxt;
 	}
-	while (large)
+	heap = g_lst.large;
+	while (heap)
 	{
-		if ((char *)p > (char *)large && (char *)p < (char *)large
-				+ large->size)
-			return (ft_find_ptr(&large, p, size));
-		large = large->nxt;
+		if (p == HEAP_SHIFT(heap))
+			return (ft_find_ptr(&g_lst.large, p, size));
+		heap = heap->nxt;
 	}
 	return (NULL);
 }
@@ -94,7 +80,9 @@ void			*realloc(void *ptr, size_t size)
 		return (malloc(16));
 	}
 	align = ft_getalign(size, 16);
+	mutex_init();
 	p = ft_find_zone(ptr, align);
+	pthread_mutex_unlock(&g_thread);
 	return (p);
 }
 

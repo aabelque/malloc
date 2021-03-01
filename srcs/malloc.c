@@ -6,95 +6,88 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/23 14:11:00 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/03/01 19:58:25 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-static void			*ft_newblock(t_block *new, t_block *blk, size_t sz,
-		t_heap **page)
+void				create_block(t_heap *blk, size_t size)
 {
-	new = (t_block *)((char *)BLK_SHIFT(blk) + blk->len);
-	new->len = sz;
-	new->freed = 0;
-	/* new->p = (char *)new + STRUCT(t_block); */
-	new->nxt = NULL;
+	t_heap			*new;
+
+	blk->free = 0;
+	if (blk->size < size + HEADER + 16)
+		return ;
+	new = (void *)((char *)blk + HEADER + size);
+	new->free = 1;
+	new->size = blk->size - (HEADER + size);
+	blk->size = size;
+	new->nb_heap = blk->nb_heap;
+	new->nxt = blk->nxt;
 	new->prv = blk;
+	if (blk->nxt)
+		blk->nxt->prv = new;
 	blk->nxt = new;
-	(*page)->free_size -= (sz + STRUCT(t_block));
-	(*page)->nb_blk++;
-	if (!(*page)->free_size)
-		(*page)->freed = 0;
-	return ((char *)BLK_SHIFT(new));
 }
 
-void				*ft_findblock(t_heap **page, size_t sz)
+static void			*getblock(t_heap **heap, size_t size, size_t size_heap)
 {
-	t_block			*blk;
-	t_block			*last;
-	t_block			*new;
+	t_heap			*blk;
+	t_heap			*new;
+	t_heap			*last;
 
-	blk = (*page)->blk;
-	last = blk;
-	new = NULL;
+	if (!*heap)
+	{
+		*heap = increase_heap(*heap, size_heap, size);
+		return ((void *)HEAP_SHIFT((*heap)));
+	}
+	blk = *heap;
 	while (blk)
 	{
-		if (blk->freed && (sz + STRUCT(t_block)) <= blk->len)
+		if (blk->free)
 		{
-			blk = ft_init_block(new, blk, sz + STRUCT(t_block));
-			blk->len = sz;
-			(*page)->free_size -= sz + STRUCT(t_block);
-			(*page)->nb_blk++;
-			return ((char *)blk);
+			if (size <= blk->size)
+			{
+				create_block(blk, size);
+				return ((void *)HEAP_SHIFT(blk));
+			}
 		}
 		last = blk;
 		blk = blk->nxt;
 	}
-	return(ft_newblock(new, last, sz, page));
+	new = increase_heap(last, size_heap, size);
+	return ((void *)HEAP_SHIFT(new));
 }
 
-static void			*ft_getblock(t_heap **zone, size_t len, size_t len_zone)
+void				*alloc(size_t size)
 {
-	t_heap			*page;
-	t_block			*new;
-
-	if (!*zone)
-	{
-		*zone = (t_heap *)ft_create_zone(zone, len_zone, len);
-		return ((char *)BLK_SHIFT((*zone)->blk));
-	}
-	page = *zone;
-	while (page)
-	{
-		if (page->freed)
-		{
-			if ((len + STRUCT(t_block)) <= page->free_size)
-				if ((new = ft_findblock(&page, len)))
-					return ((char *)BLK_SHIFT(new));
-		}
-		page = page->nxt;
-	}
-	page = (t_heap *)ft_create_zone(zone, len_zone, len);
-	return ((char *)BLK_SHIFT(page->blk));
-}
-
-static void			*ft_alloc(size_t size)
-{
-	struct rlimit	rlp;
 	size_t			align;
+	struct rlimit	rlp;
 
 	getrlimit(RLIMIT_DATA, &rlp);
 	align = ft_getalign(size, 16);
 	if (align > rlp.rlim_cur || size > rlp.rlim_cur)
 		return (NULL);
 	if (align <= TINY)
-		return (ft_getblock(&g_lst.tiny, align, TINY_ZONE));
+		return (getblock(&g_lst.tiny, align, TINY_ZONE));
 	else if (align <= SMALL)
-		return (ft_getblock(&g_lst.small, align, SMALL_ZONE));
+		return (getblock(&g_lst.small, align, SMALL_ZONE));
 	else
-		return (ft_alloc_large(&g_lst.large, align, STRUCT(t_heap) + STRUCT(t_block)));
+		return (increase_large_heap(&g_lst.large, align, HEADER));
 	return (NULL);
+}
+
+void				mutex_init(void)
+{
+	static int		init = 0;
+
+	if (!init)
+	{
+		pthread_mutex_init(&g_thread, NULL);
+		init++;
+	}
+	pthread_mutex_lock(&g_thread);
 }
 
 void				*malloc(size_t size)
@@ -102,9 +95,13 @@ void				*malloc(size_t size)
 	static int		init = 0;
 	void			*p;
 
+	mutex_init();
 	p = NULL;
 	if ((int)size < 0)
+	{
+		pthread_mutex_unlock(&g_thread);
 		return (NULL);
+	}
 	if (!size)
 		size = 16;
 	if (!init)
@@ -114,6 +111,7 @@ void				*malloc(size_t size)
 		g_lst.large = NULL;
 		init++;
 	}
-	p = ft_alloc(size);
+	p = alloc(size);
+	pthread_mutex_unlock(&g_thread);
 	return (p);
 }

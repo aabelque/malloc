@@ -6,7 +6,7 @@
 #    By: azziz <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/11 10:06:32 by azziz             #+#    #+#              #
-#    Updated: 2021/02/08 17:16:35 by aabelque         ###   ########.fr        #
+#    Updated: 2021/03/01 19:38:23 by aabelque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,16 +38,14 @@ OBJS = $(addprefix $(O_DIR),$(SRC:.c=.o))
 all: $(NAME)
 	
 $(NAME): $(OBJS)
-	@$(CC) $(DEBUG) -shared -o $(NNAME)_$(HOSTTYPE).so $(OBJS)
-	@ar rc malloc.a $(OBJS)
-	@ranlib malloc.a
+	@$(CC) -shared -o $(NNAME)_$(HOSTTYPE).so $(OBJS)
 	@rm -rf $(NAME)
 	@ln -sf $(NNAME)_$(HOSTTYPE).so $(NAME)
 	@tput dl; tput el1; tput cub 100; echo "\033[33mBuilt library:\033[0m \033[32;1;4m$(notdir $@)\033[0m"
 
 $(OBJS): $(O_DIR)%.o: $(C_DIR)%.c
 	@mkdir $(O_DIR) 2> /dev/null || echo "" > /dev/null
-	@$(CC) $(DEBUG) $(CFLAGS) -o $@ -c $< -fPIC -I$(H_DIR)
+	@$(CC) $(CFLAGS) -o $@ -c $< -fPIC -I$(H_DIR)
 
 norme:
 	@norminette $(C_DIR)

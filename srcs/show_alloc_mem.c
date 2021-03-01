@@ -6,14 +6,14 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 17:09:37 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/23 10:07:40 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/03/01 19:59:39 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <stdio.h>
 
-inline void		ft_hexdump(long n)
+inline void				ft_hexdump(long n)
 {
 	if (n > 15)
 		ft_hexdump(n / 16);
@@ -23,79 +23,69 @@ inline void		ft_hexdump(long n)
 		ft_putchar((n % 16) - 10 + 97);
 }
 
-static inline void		print_mem_large(t_heap *page, int *i)
+static inline void		print_mem_large(t_heap *heap, int *i)
 {
 	t_heap	*head;
 
-	ft_hexdump((long)page);
+	ft_hexdump((long)heap);
 	write(1, "\n", 1);
-	head = page;
-	while (page)
+	head = heap;
+	while (heap)
 	{
 		write(1, "0X", 2);
-		ft_hexdump((long)BLK_SHIFT(page->blk));
+		ft_hexdump((long)HEAP_SHIFT(heap));
 		ft_putstr(" - ");
 		write(1, "0X", 2);
-		ft_hexdump((long)BLK_SHIFT(page->blk) + page->blk->len);
+		ft_hexdump((long)heap->nxt);
 		ft_putstr(" : ");
-		ft_putnbr(page->blk->len);
+		ft_putnbr(heap->size);
 		ft_putstr(" octets\n");
-		*i += page->blk->len;
-		page = page->nxt;
+		*i += heap->size;
+		heap = heap->nxt;
 	}
-	page = head;
+	heap = head;
 }
 
-static inline void		print_mem(t_block *blk)
+static inline void		print_mem(t_heap *blk)
 {
 	write(1, "0X", 2);
-	ft_hexdump((long)BLK_SHIFT(blk));
+	ft_hexdump((long)HEAP_SHIFT(blk));
 	ft_putstr(" - ");
 	write(1, "0X", 2);
-	ft_hexdump((long)BLK_SHIFT(blk) + blk->len);
+	ft_hexdump((long)blk->nxt);
 	ft_putstr(" : ");
-	ft_putnbr(blk->len);
+	ft_putnbr(blk->size);
 	ft_putstr(" octets\n");
 }
 
-static inline void		search_mem(t_heap *page, int *i)
+static inline void		search_mem(t_heap *heap, int *i)
 {
-	t_block	*first;
 	t_heap	*head;
 
-	ft_hexdump((long)page);
+	ft_hexdump((long)heap);
 	write(1, "\n", 1);
-	head = page;
-	while (page)
+	head = heap;
+	while (heap)
 	{
-		first = page->blk;
-		while (page->blk)
+		if (!heap->free)
 		{
-			if (!page->blk->freed)
-			{
-				print_mem(page->blk);
-				*i += page->blk->len;
-			}
-			page->blk = page->blk->nxt;
-			/* *i += 1; */
+			print_mem(heap);
+			*i += heap->size;
 		}
-		page->blk = first;
-		page = page->nxt;
+		heap = heap->nxt;
 		write(1, "\n", 1);
 	}
-	page = head;
+	heap = head;
 }
 
 void					show_alloc_mem(void)
 {
 	int		i;
-	int		j;
 	t_heap	*tiny;
 	t_heap	*small;
 	t_heap	*large;
 
 	i = 0;
-	j = 0;
 	tiny = g_lst.tiny;
 	small = g_lst.small;
 	large = g_lst.large;
