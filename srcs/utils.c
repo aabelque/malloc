@@ -6,31 +6,32 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 15:37:31 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/27 18:28:54 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/03/01 19:12:11 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-int			release_heap(t_heap *heap)
+void		*increase_large_heap(t_heap **lst, size_t len, int sz_struct)
 {
-	t_heap	*prv;
-	t_heap	*nxt;
-	
-	prv = heap->prv;
-	nxt = heap->nxt;
-	if ((!prv && !nxt))
-		return (0);
-	else if (!prv && nxt && (nxt->nb_heap != heap->nb_heap))
-		return (1);
-	else if (prv && !nxt && (prv->nb_heap != heap->nb_heap))
-		return (1);
-	else if (prv && nxt && (prv->nb_heap != heap->nb_heap)
-			&& (nxt->nb_heap != heap->nb_heap))
-		return (1);
-	else 
-		return (0);
-	return (0);
+	t_heap	*new;
+	t_heap	*last;
+
+	last = *lst;
+	if (!(new = (t_heap *)mmap(0, len + sz_struct, PROT, FLGS, -1, 0)))
+		return (NULL);
+	new->nxt = NULL;
+	new->size = len + sz_struct;
+	new->free = 0;
+	if (last)
+	{
+		while (last->nxt)
+			last = last->nxt;
+		last->nxt = new;
+		return ((void *)HEAP_SHIFT(new));
+	}
+	*lst = new;
+	return ((void *)HEAP_SHIFT((*lst)));
 }
 
 t_heap		**find_heap(void *ptr, t_heap **current)
@@ -47,6 +48,13 @@ t_heap		**find_heap(void *ptr, t_heap **current)
 	{
 		if (ptr == HEAP_SHIFT(*current))
 			return (&g_lst.small);
+		*current = (*current)->nxt;
+	}
+	*current = g_lst.large;
+	while (*current)
+	{
+		if (ptr == HEAP_SHIFT(*current))
+			return (&g_lst.large);
 		*current = (*current)->nxt;
 	}
 	return (NULL);

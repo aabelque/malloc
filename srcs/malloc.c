@@ -6,32 +6,11 @@
 /*   By: azziz <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/11 11:27:42 by azziz             #+#    #+#             */
-/*   Updated: 2021/02/27 19:03:49 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/03/01 19:34:32 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
-
-void		*increase_large_heap(t_heap **lst, size_t len, int sz_struct) {
-	t_heap	*new;
-	t_heap	*last;
-
-	last = *lst;
-	if (!(new = (t_heap *)mmap(0, len + sz_struct, PROT, FLGS, -1, 0)))
-		return (NULL);
-	new->nxt = NULL;
-	new->size = len + sz_struct;
-	new->free = 0;
-	if (last)
-	{
-		while (last->nxt)
-			last = last->nxt;
-		last->nxt = new;
-		return (HEAP_SHIFT(new));
-	}
-	*lst = new;
-	return (HEAP_SHIFT((*lst)));
-}
 
 void				create_block(t_heap *blk, size_t size)
 {
@@ -60,27 +39,25 @@ static void			*getblock(t_heap **heap, size_t size, size_t size_heap)
 
 	if (!*heap)
 	{
-		*heap = (t_heap *)increase_heap(*heap, size_heap, size);
-		return (HEAP_SHIFT((*heap)));
+		*heap = increase_heap(*heap, size_heap, size);
+		return ((void *)HEAP_SHIFT((*heap)));
 	}
 	blk = *heap;
-	new = NULL;
-	last = NULL;
 	while (blk)
 	{
 		if (blk->free)
 		{
-			if ((size + HEADER) <= blk->size)
+			if (size <= blk->size)
 			{
 				create_block(blk, size);
-				return (HEAP_SHIFT(blk));
+				return ((void *)HEAP_SHIFT(blk));
 			}
 		}
 		last = blk;
 		blk = blk->nxt;
 	}
-	new = (t_heap *)increase_heap(last, size_heap, size);
-	return (HEAP_SHIFT(new));
+	new = increase_heap(last, size_heap, size);
+	return ((void *)HEAP_SHIFT(new));
 }
 
 void				*alloc(size_t size)
@@ -121,7 +98,10 @@ void				*malloc(size_t size)
 	mutex_init();
 	p = NULL;
 	if ((int)size < 0)
+	{
+		pthread_mutex_unlock(&g_thread);
 		return (NULL);
+	}
 	if (!size)
 		size = 16;
 	if (!init)

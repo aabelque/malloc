@@ -6,36 +6,30 @@
 /*   By: aabelque <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/29 09:44:25 by aabelque          #+#    #+#             */
-/*   Updated: 2021/02/27 19:07:10 by aabelque         ###   ########.fr       */
+/*   Updated: 2021/03/01 19:40:19 by aabelque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-static int		free_large_heap(t_heap **heap, void *ptr)
+int				release_heap(t_heap *heap)
 {
-	t_heap		*tmp;
-	t_heap		*prev;
+	t_heap	*prv;
+	t_heap	*nxt;
 
-	tmp = *heap;
-	prev = NULL;
-	if (tmp && !tmp->nxt)
+	prv = heap->prv;
+	nxt = heap->nxt;
+	if ((!prv && !nxt))
 		return (0);
-	if (tmp && (HEAP_SHIFT(tmp) == ptr))
-	{
-		*heap = tmp->nxt;
-		munmap((t_heap *)tmp, tmp->size + HEADER);
+	else if (!prv && nxt && (nxt->nb_heap != heap->nb_heap))
+		return (1);
+	else if (prv && !nxt && (prv->nb_heap != heap->nb_heap))
+		return (1);
+	else if (prv && nxt && (prv->nb_heap != heap->nb_heap)
+			&& (nxt->nb_heap != heap->nb_heap))
+		return (1);
+	else
 		return (0);
-	}
-	while (tmp && tmp->nxt && (HEAP_SHIFT(tmp) != ptr))
-	{
-		prev = tmp;
-		tmp = tmp->nxt;
-	}
-	if (!tmp)
-		return (-1);
-	prev->nxt = tmp->nxt;
-	munmap((t_heap *)tmp, tmp->size + HEADER);
 	return (0);
 }
 
@@ -46,15 +40,16 @@ static void		defrag_heap(t_heap **heap)
 
 	prev = (*heap)->prv;
 	next = (*heap)->nxt;
-	if (prev && prev->free && (prev->nb_heap == (*heap)->nb_heap))
+	while (prev && prev->free && (prev->nb_heap == (*heap)->nb_heap))
 	{
 		prev->size += (*heap)->size + HEADER;
 		prev->nxt = next;
 		if (next)
 			next->prv = prev;
 		*heap = prev;
+		prev = prev->prv;
 	}
-	if (next && next->free && (next->nb_heap == (*heap)->nb_heap))
+	while (next && next->free && (next->nb_heap == (*heap)->nb_heap))
 	{
 		(*heap)->size += next->size + HEADER;
 		next = next->nxt;
@@ -98,7 +93,7 @@ void			free_lock(void *ptr)
 			free_heap(heap, current);
 	}
 	else
-		free_large_heap(&g_lst.large, ptr);
+		return ;
 }
 
 void			free(void *ptr)
